@@ -580,6 +580,99 @@ func _physics_process(delta):
 
 Большие (кол-во 30 скэйл 5)
 
-	
+## Создание спавна астероидов	
 
-Все что осталось это сделать спавн астероидов
+Для спавна астероидов создадим Node на нашем основном уровне в котором будут хранится точки спавна и Timer
+В нашу Node добавляем Marker2D и переименовываем его, а также Timer, после чего создаем функцию спавна большого астероида
+
+```gdscript
+func spawn_large_asteroid(pos):
+	spawn_asteroid(pos, Asteroid.AsteroidSize.LARGE)
+```
+
+Далее подключаем сигнал timeout таймера к функции, которая будет спавнить астероид.
+
+```gdscript
+func _on_timer_timeout():
+	spawn_large_asteroid($Spawners/Spawner.global_position)
+```
+
+Теперь сделаем, чтобы наш астероид мог спавнится случайно в разных местах. Для этого добавим еще 3 Marker2D и переименуем их. 
+Вернемся к коду и создадим массим хранящий точки спавна
+
+```gdscript
+var spawn_points = []  # Массив для хранения точек спавна
+```
+
+В методе _ready() добавляем наши точки в сам массив
+
+```gdscript
+func _ready():
+	...	
+	spawn_points.append($SpawnPoint1)
+	spawn_points.append($SpawnPoint2)
+	spawn_points.append($SpawnPoint3)
+	spawn_points.append($SpawnPoint4)
+```
+
+Комментируем функцию spawn_large_asteroid(pos), она на данный момент нам не нужна, и изменяем функцию _on_timer_timeout(). 
+
+```gdscript
+func _on_timer_timeout():
+	var random_spawn_point = spawn_points[randi() % spawn_points.size()].global_position
+	spawn_asteroid(random_spawn_point, Asteroid.AsteroidSize.LARGE)
+```
+
+Поясним что происходит в функции _on_timer_timeout()
+randi() — генерирует случайное целое число. spawn_points.size() возвращает количество элементов в списке spawn_points. % используется для того, чтобы случайное число от randi() было ограничено длиной списка spawn_points. 
+
+Теперь добавим, чтобы спавнилось случайно количество астеройдов по этим точка
+```gdscript
+	var num_asteroids = randi_range(1, 4)  # Случайное количество астероидов от 1 до 4
+	for i in range(num_asteroids):
+		var random_spawn_point = spawn_points[randi() % spawn_points.size()].global_position
+		spawn_asteroid(random_spawn_point, Asteroid.AsteroidSize.LARGE)
+```
+Однако в таком случае астероиды могут спавнится друг в друге, давайте изменим функцию чтобы такой пробелмы у нас не возникало
+
+```gdscript
+func _on_timer_timeout():
+	var num_asteroids = randi_range(1, 4)  # Случайное количество астероидов от 1 до 4
+	var num_spawn_points = spawn_points.size()
+	
+	# Спавним астероиды
+	for i in range(num_asteroids):
+		var spawn_index = randi() % num_spawn_points
+		var random_spawn_point = spawn_points[spawn_index].global_position
+		spawn_asteroid(random_spawn_point, Asteroid.AsteroidSize.LARGE)
+```
+
+В этом коде мы просто генерируем случайный индекс spawn_index в диапазоне от 0 до num_spawn_points - 1, где num_spawn_points - это количество точек спавна. Этот индекс затем используется для выбора случайной точки спавна из массива spawn_points. Таким образом, мы гарантируем, что каждый астероид спавнится в уникальной точке.
+
+Ну и последним что мы сделаем, это не фиксированное время на справн астероидов, а рандомное, для этого нам нужно 
+Для этого мы отключим автостарт у таймера и в _ready добавим его изначальный старт
+
+```gdscript
+$Spawners/Timer.start()
+```
+И изменим функцию `_on_timer_timeout()`. В ней бы добавляем минимальное и максимальное значения задержки между запуском таймера, рандомим его и задаем это значение параметру `wait_time`
+
+```gdscript
+func _on_timer_timeout():
+	var min_delay = 1.0
+	var max_delay = 5.0
+	var random_delay = randf_range(min_delay, max_delay)
+	
+	$Spawners/Timer.wait_time = random_delay
+	$Spawners/Timer.start()
+	
+	print("Новое значение wait_time:", $Spawners/Timer.wait_time)
+	
+	var num_asteroids = randi_range(1, 4)  # Случайное количество астероидов от 1 до 4
+	var num_spawn_points = spawn_points.size()
+		# Спавним астероиды
+	for i in range(num_asteroids):
+		var spawn_index = randi() % num_spawn_points
+		var random_spawn_point = spawn_points[spawn_index].global_position
+		spawn_asteroid(random_spawn_point, Asteroid.AsteroidSize.LARGE)
+```
