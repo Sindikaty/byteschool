@@ -676,3 +676,16 @@ func _on_timer_timeout():
 		var random_spawn_point = spawn_points[spawn_index].global_position
 		spawn_asteroid(random_spawn_point, Asteroid.AsteroidSize.LARGE)
 ```
+
+НЕ ФАКТ ЧТО РАБОТАЕТ
+```gdscript
+    # Проверяем, находится ли астероид за пределами видимого экрана
+    var viewport = get_viewport()
+    var screen_rect = Rect2(viewport.get_visible_rect().position, viewport.get_visible_rect().size)
+    if not screen_rect.has_point(pos):
+        # Задаем импульс движения к центру экрана
+        var center = screen_rect.position + screen_rect.size / 2
+        var direction = (center - pos).normalized()
+        var impulse = direction * 100  # Настройте значение импульса по необходимости
+        a.apply_impulse(Vector2(), impulse)
+```
