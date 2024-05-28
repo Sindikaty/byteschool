@@ -56,7 +56,7 @@
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/cc79d761-d492-4ad1-af33-1af0ce036e41)
 
-
+### Создание игрока (передвижение)
 
 
 
