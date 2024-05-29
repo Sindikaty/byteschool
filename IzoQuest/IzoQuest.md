@@ -58,23 +58,84 @@
 
 ### Создание игрока (передвижение)
 
+Начнем создание игрока. Основным узлом будет CharBody и к нему мы присоединяем AnimSprite, Camera и CollisionPolygon
 
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/0e7a0632-0e6e-42e6-80d9-52f0f03e4bdd)
 
+У спрайта создаем 4 анимации:
+* Стоим и повернуты вверх
+* Стоим и повернуты вниз
+* Идем вверх
+* Идем вниз
 
+Коллизию задаем у нижней части игрока
 
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/0f4a2f0a-33d7-4d67-a17f-de9fa8413c0e)
 
+Переходим к скрипту, изначально создаем 2 переменные.
 
+```gdscript
+var motion = Vector2()
+@export var speed = 200
+```
 
+И теперь задаем само передвижение + анимации
 
+```gdscript
+func input():
+	motion = Vector2()
+	if Input.is_action_pressed("w"): # нажимаем на W
+		motion.y = -speed # уменьшаем Y с значением 200
+		$AnimatedSprite2D.play("walk_up") # Анимация вверх
+	if Input.is_action_pressed("d"): 
+		motion.x = speed
+		$AnimatedSprite2D.flip_h = false
+		if $AnimatedSprite2D.animation == "idle":
+			$AnimatedSprite2D.play("walk_down")
 
+	if Input.is_action_pressed("a"):
+		motion.x = -speed
+		$AnimatedSprite2D.flip_h = true
+		if $AnimatedSprite2D.animation == "idle":
+			$AnimatedSprite2D.play("walk_down")
 
+	if Input.is_action_pressed("s"):
+		motion.y = speed
+		$AnimatedSprite2D.play("walk_down")
+	
+	if motion == Vector2():
+		$AnimatedSprite2D.play("idle")
+	 
+	set_velocity(motion.normalized() * speed) # Это нужно для того чтобы скорость не складывалась если мы идем по диагонали
+	move_and_slide()
+```
 
+Также можно добавить небольшое ускорение, можно такое как показано ниже
+```gdscript
+if Input.is_action_pressed("shift"):
+		speed = 300
+	else:
+		speed = 200
+```
 
+А можно такой вариант с ограниченным временем действия
 
+```gdscript
+	if Input.is_action_pressed("run") and stamina > 5:
+		speed = 80
+		stamina -= 1
+	else:
+		speed = 50
+		stamina += 1
+		
+	if stamina <= 6:
+		speed = 50
+```
 
+Однако в таком случае нужно задать максимальное значение стамины и задать следующее условие
 
-
-
-
-
+```gdscript
+	if stamina > max_stamina:
+		stamina = max_stamina
+```
 
