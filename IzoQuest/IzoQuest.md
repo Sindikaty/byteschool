@@ -146,3 +146,46 @@ if Input.is_action_pressed("shift"):
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/e3ab41fb-24fa-47c1-a5d0-df79d7e43d69)
 
+И последним, что мы создадим на это уроке будет самый NPC не дающий заданий. Основным узлом будет CharBody и к нему мы присоединяем AnimSprite и CollisionPolygon. Анимации и коллизию делаем как у игрока полсе чего переходим к скрипту.
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/929a2d10-27ce-45d5-a9e5-fd5bdeea1175)
+
+Для реализации нам понадобятится 4 переменные
+
+```gdscript
+var move_dir = Vector2.ZERO
+var move_speed = 50
+var time_to_change_dir = 2
+var timer = 0
+```
+
+После чего в process прописываем случайное перемещение бота каждые 2 секунды и я
+
+```gdscript
+func _process(delta):
+	timer += delta;
+	if timer >= time_to_change_dir:
+		timer = 0
+		move_dir = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
+
+	if move_dir == Vector2(0,0):
+		$AnimatedSprite2D.play("idle")
+	else:
+		move_anim()
+	
+	set_velocity(move_dir * move_speed)
+	move_and_slide()
+
+func move_anim():
+	if move_dir.x > 0:
+		$AnimatedSprite2D.flip_h = false
+	else:
+		$AnimatedSprite2D.flip_h = true
+		
+	if move_dir.y > 0:
+		$AnimatedSprite2D.play("walk_dwn")
+	else:
+		$AnimatedSprite2D.play("walk_up")
+```
+
+На уровне добавляем отдельный узел Node2D где будут хранится все NCP, после чего присоединяем туда наших ботов.
