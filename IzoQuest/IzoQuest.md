@@ -146,7 +146,7 @@ if Input.is_action_pressed("shift"):
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/e3ab41fb-24fa-47c1-a5d0-df79d7e43d69)
 
-И последним, что мы создадим на это уроке будет самый NPC не дающий заданий. Основным узлом будет CharBody и к нему мы присоединяем AnimSprite и CollisionPolygon. Анимации и коллизию делаем как у игрока полсе чего переходим к скрипту.
+И последним, что мы создадим на этом уроке будет самый обычный NPC не дающий заданий. Основным узлом будет CharBody и к нему мы присоединяем AnimSprite и CollisionPolygon. Анимации и коллизию делаем как у игрока полсе чего переходим к скрипту.
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/929a2d10-27ce-45d5-a9e5-fd5bdeea1175)
 
