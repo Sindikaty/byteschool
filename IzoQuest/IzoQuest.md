@@ -137,6 +137,43 @@ if Input.is_action_pressed("shift"):
 		stamina = max_stamina
 ```
 
+Можно сделать управление мышкой
+```gdscript
+var speed = 100
+var stop = Vector2()
+
+func _physics_process(delta):
+	var agent = $NavigationAgent2D2
+	var next = agent.get_next_path_position()
+	agent.target_position = stop
+	velocity = position.direction_to(next)*speed
+	
+	if not agent.is_navigation_finished():
+		#update_animation(velocity)
+		move_and_slide()
+	#else:
+		#animated_sprite.play("idle_down")
+		
+func _input(event):
+	if InputEventMouseButton and event.is_pressed():
+		stop = get_global_mouse_position()
+```
+Анимашки
+
+```gdscript
+#func update_animation(velocity):
+	#if velocity.x > 0:
+		#animated_sprite.flip_h = false
+		#animated_sprite.play("walk_down")
+	#elif velocity.x < 0:
+		#animated_sprite.flip_h = true
+		#animated_sprite.play("walk_down")
+	#elif velocity.y < 0:
+		#animated_sprite.play("walk_down")
+	#elif velocity.y > 0:
+		#animated_sprite.play("walk_down")
+ ```
+
 Теперь для корректного отображения игрока проходящего рядом со зданиями включим следующий параметр у Node2D в котором всё хранится
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/1346e507-98ca-4b85-8c27-47a9aea0e53e)
