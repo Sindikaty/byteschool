@@ -79,33 +79,32 @@ var motion = Vector2()
 ```
 
 И теперь задаем само передвижение + анимации
-
 ```gdscript
-func input():
+func _physics_process(delta):
 	motion = Vector2()
-	if Input.is_action_pressed("w"): # нажимаем на W
+	if Input.is_action_pressed("up"): # нажимаем на W
 		motion.y = -speed # уменьшаем Y с значением 200
 		$AnimatedSprite2D.play("walk_up") # Анимация вверх
-	if Input.is_action_pressed("d"): 
+	if Input.is_action_pressed("right"): 
 		motion.x = speed
 		$AnimatedSprite2D.flip_h = false
-		if $AnimatedSprite2D.animation == "idle":
+		if $AnimatedSprite2D.animation == "idle_down":
 			$AnimatedSprite2D.play("walk_down")
 
-	if Input.is_action_pressed("a"):
+	if Input.is_action_pressed("left"):
 		motion.x = -speed
 		$AnimatedSprite2D.flip_h = true
-		if $AnimatedSprite2D.animation == "idle":
+		if $AnimatedSprite2D.animation == "idle_down":
 			$AnimatedSprite2D.play("walk_down")
 
-	if Input.is_action_pressed("s"):
+	if Input.is_action_pressed("down"):
 		motion.y = speed
 		$AnimatedSprite2D.play("walk_down")
 	
 	if motion == Vector2():
-		$AnimatedSprite2D.play("idle")
-	 
-	set_velocity(motion.normalized() * speed) # Это нужно для того чтобы скорость не складывалась если мы идем по диагонали
+		$AnimatedSprite2D.play("idle_down")
+
+  	set_velocity(motion.normalized() * speed) # Это нужно для того чтобы скорость не складывалась если мы идем по диагонали
 	move_and_slide()
 ```
 
