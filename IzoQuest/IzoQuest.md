@@ -161,6 +161,8 @@ func _input(event):
 Анимашки
 
 ```gdscript
+@onready var animated_sprite = $AnimatedSprite2D
+
 #func update_animation(velocity):
 	#if velocity.x > 0:
 		#animated_sprite.flip_h = false
