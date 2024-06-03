@@ -235,8 +235,7 @@ func move_anim():
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/7c821aa8-5737-4f83-8fc5-34ca97c27841)
 
 Теперь нам нужно создать сам диалог с продавцом, для этого создадим `CanvasLayer` и в нем узел `Control`. ТАкже нам понадобятся следующие элементы:
-* Panel (рамка диалогового окна)
-* TextPanel (рамка текста NPC)
+* Panel x2 (рамка диалогового окна и рамка текста)
 * RichTextLabel (Текст самого NPC)
 * Button x2 (ВЫбор питомца)
 * AnimatedSprite2D (Скин NPC)
@@ -353,6 +352,31 @@ func _on_option_2_pressed():
 		$"../../CanvasLayer/torgovec_dialog/RichTextLabel2".text = "У тебя уже есть питомец"
 ```
 
+Можно добавить проверку на диалог, чтобы маршрут не строился в случае диалога. Для этого создаем глобальный скрипт и добавляем изменение в зависимости от ситуации.
 
+Если мы зашли в зону диалога делаем переменную true
 
+```gdscript
+func _on_area_2d_body_entered(body):
+	if body.name == "player":
+		in_area = true
+		if in_area == true:
+			GlobalScript.dialog = true
+			$"../../CanvasLayer/Pet_tailor".visible = true
+```
 
+А если мы нажали по выбору питомца или он уже у нас есть мы делаем ее false
+
+```gdscript
+func _on_wolf_2_pressed():
+	if pet_count < 1:
+		var pet = pet_bear.instantiate()
+		pet_count += 1
+		pet.position = $".".position
+		get_parent().add_child(pet)
+		$"../../CanvasLayer/Pet_tailor/RichTextLabel".text = "Ну слушай... Зато к тебе и близко никто не подойдет"
+		GlobalScript.dialog = false
+	else:
+		$"../../CanvasLayer/Pet_tailor/RichTextLabel".text = "У тебя уже есть питомец"
+		GlobalScript.dialog = false
+```
