@@ -227,3 +227,43 @@ func move_anim():
 ```
 
 На уровне добавляем отдельный узел Node2D где будут хранится все NPC, после чего присоединяем туда наших ботов.
+
+## Урок 2
+
+Начнем урок с создания торговца у которого мы можем купить питомца. Для того чтобы мы покупали питомца не у пустоты, а у NPC добавим его спрайт к нашему месту продажи, например так
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/7c821aa8-5737-4f83-8fc5-34ca97c27841)
+
+Теперь нам нужно создать сам диалог с продавцом, для этого создадим `CanvasLayer` и в нем узел `Control`. ТАкже нам понадобятся следующие элементы:
+* Panel (рамка диалогового окна)
+* TextPanel (рамка текста NPC)
+* RichTextLabel (Текст самого NPC)
+* Button x2 (ВЫбор питомца)
+* AnimatedSprite2D (Скин NPC)
+
+И при водим примерно к этому виду
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/dfdd6df8-3acb-45c2-ba87-2030831d5ad6)
+
+Добавим появление этого диалога с торговцем. Для этого создадим зону с коллизией
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/13fbe0d8-4b58-4a79-8d17-bc9ee9f960a9)
+
+Присоединяем сигналы на вход и выход из зоны торговца и в них прописываем включение/выключение диалога соответственно
+
+```gdscript
+var in_area = false
+
+func _on_torgovec_body_entered(body):
+	if body.name == "Player":
+		in_area = true
+		if in_area == true:
+			$CanvasLayer/torgovec_dialog.visible = true
+
+
+func _on_torgovec_body_exited(body):
+	if body.name == "Player":
+		in_area = false
+		if in_area == false:
+			$CanvasLayer/torgovec_dialog.visible = false
+```
