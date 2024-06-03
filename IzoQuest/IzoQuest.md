@@ -267,3 +267,92 @@ func _on_torgovec_body_exited(body):
 		if in_area == false:
 			$CanvasLayer/torgovec_dialog.visible = false
 ```
+
+Теперь неужно добавить самих питомцев которых будет продавать NPC. Для каждого питомца создаем отдельные сцены состаящие из следующих узлов
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/2050358a-7455-48a0-b58f-5dd04af9afc2)
+
+Для создания передвижения питомца нам понадобится 2 переменные 
+
+```gdscript
+@export var speed = 100
+var player_position
+```
+
+В методе `_ready` мы определяем позицию игрока, после чего в `_physics_process` мы также определяем позицию игрока и создаем локальную переменную которая определяет расстояние от питомца до игрока, после чего создаем проверку на это расстояние, если оно меньше 50 питомец двигается к нам. 
+
+```gdscript
+func _ready():
+	player_position = $"../Player".position
+
+func _physics_process(delta):
+	player_position = $"../Player".position
+	var distance = position.distance_to(player_position)
+	 
+	if distance > 50:
+		var direction = (player_position - position).normalized()
+		set_velocity(direction * speed)
+		move_and_slide()
+
+		if direction.x > 0 and speed > 0:
+			$AnimatedSprite2D.play("walk")
+			$AnimatedSprite2D.flip_h = false
+		elif direction.x < 0 and speed > 0:
+			$AnimatedSprite2D.play("walk")
+			$AnimatedSprite2D.flip_h = true
+	else:
+		$AnimatedSprite2D.play("idle")
+```
+
+Все что нам осталось это добавить спавн питомцев при нажатии на кнопку. Для этого в основном уровне создаем 2 переменные в которые мы предварительно загружаем сцены.
+
+```gdscript
+var pet_wolf = preload("res://pet.tscn")
+var pet_bear = preload("res://bear.tscn")
+```
+
+Присоединяем 2 сигнала на кнопки и создаем в них клон наших питомцев.
+
+```gdscript
+func _on_option_1_pressed():
+		var pet = pet_wolf.instantiate()
+		pet.position = $".".position
+		get_parent().add_child(pet)
+		$"../../CanvasLayer/torgovec_dialog/RichTextLabel2".text = "Отлинчый выбор! Он в цирке не выступает"
+
+func _on_option_2_pressed():
+		var pet = pet_bear.instantiate()
+		pet.position = $".".position
+		get_parent().add_child(pet)
+		$"../../CanvasLayer/torgovec_dialog/RichTextLabel2".text = "Ну слушай... Зато к тебе и близко никто не подойдет"
+```
+
+Можно также добавить проверку на количество питомцев, для этого добавим переменную и проверку
+
+```gdscript
+pet_count = 0
+
+func _on_option_1_pressed():
+	if pet_count < 1:
+		var pet = pet_wolf.instantiate()
+		pet_count += 1
+		pet.position = $".".position
+		get_parent().add_child(pet)
+		$"../../CanvasLayer/torgovec_dialog/RichTextLabel2".text = "Отлинчый выбор! Он в цирке не выступает"
+	else:
+		$"../../CanvasLayer/torgovec_dialog/RichTextLabel2".text = "У тебя уже есть питомец"
+		
+func _on_option_2_pressed():
+	if pet_count < 1:
+		var pet = pet_bear.instantiate()
+		pet_count += 1
+		pet.position = $".".position
+		get_parent().add_child(pet)
+		$"../../CanvasLayer/torgovec_dialog/RichTextLabel2".text = "Ну слушай... Зато к тебе и близко никто не подойдет"
+	else:
+		$"../../CanvasLayer/torgovec_dialog/RichTextLabel2".text = "У тебя уже есть питомец"
+```
+
+
+
+
