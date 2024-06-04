@@ -396,7 +396,7 @@ MPC будет выглядить примерно так
 * RichTextLabel
 * Button x4
 
-Расставляем все и присоединяем сигналы к кнопкам
+Расставляем все и создаем скрипт у Control после чего присоединяем сигналы к кнопкам.
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/d27b2410-92b7-4c29-bbec-002ef9d1d688)
 
@@ -430,6 +430,28 @@ func _on_answer3_pressed():
 
 func _on_answer4_pressed():
 	$RichTextLabel.text = "Ага. Всего хорошего."
+```
+
+Теперь нужно добавить собственно появление этого диалога. Для этого создаем скрипт у Area2D нашего NPC
+
+```gdscript
+func _on_guard_body_entered(body):
+	if body.name == "Player":
+		$Label.visible = true
+		$Label.text = "Чего тебе, приключенец?"
+		$"../../CanvasLayer/dialog".visible = true
+		
+	if body.is_in_group("NPC"):
+		$Label.visible = true
+		$Label.text = "Не мешайте службе, житель"
+
+func _on_guard_body_exited(body):
+	if body.name == "Player":
+		$Label.visible = false
+		$"../../CanvasLayer/dialog".visible = false
+		
+	if body.is_in_group("NPC"):
+		$Label.visible = false
 ```
 
 Следующим NPC будет который выдает нам задание найти объект. Структура NPC следующая
