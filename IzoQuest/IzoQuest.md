@@ -380,3 +380,145 @@ func _on_wolf_2_pressed():
 		$"../../CanvasLayer/Pet_tailor/RichTextLabel".text = "У тебя уже есть питомец"
 		GlobalScript.dialog = false
 ```
+
+Следующего NPC которого мы сделаем будет стражник который рассказывает что где находится. Нам понадобятся следующие узлы:
+* Area2D
+* AnimatedSprite2D
+* CollisionShape2D
+* Label
+
+MPC будет выглядить примерно так
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/c207a3d5-15f4-4dde-8834-0ef7d2b5b3c3)
+
+Теперь нам нужно сздать сам диалог со стражником. Делать это мы будем в ранее созданном `CanvasLayer`. Основным узлом бьудет `Control` и к нему присоединяем следующие узлы:
+* Panel х2
+* RichTextLabel
+* Button x4
+
+Расставляем все и присоединяем сигналы к кнопкам
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/d27b2410-92b7-4c29-bbec-002ef9d1d688)
+
+```gdscript
+var variation_fact = 0
+
+
+func _on_answer1_pressed():
+	$RichTextLabel.text = "Просто иди дальше по дороге. Не ошибешься. Они полказны угрохали на этот замок."
+
+
+func _on_answer2_pressed():
+	$RichTextLabel.text = "Парень, она слева от тебя."
+
+
+func _on_answer3_pressed():
+	randomize()
+	variation_fact = int(randf_range(0, 10))
+	if variation_fact == 0:
+		$RichTextLabel.text = "Что-то интересное? Я тебе что, библиотекарь что ли?"
+	if variation_fact == 1:
+		$RichTextLabel.text = "Говорят в городе завелся некий Давахин... Ничего не слышал об этом?"
+	if variation_fact == 2:
+		$RichTextLabel.text = "Хочешь что-то интересное - дуй в таверну. Там наслушаешься"
+	if variation_fact == 3:
+		$RichTextLabel.text = "Ты никому не говори, но я на самом деле хотел быть в разведотряде."
+	if variation_fact == 4:
+		$RichTextLabel.text = "А что если я тоже избранный? Я вон, в детстве в чан с облепиховым морсом упал."
+	if variation_fact == 5:
+		$RichTextLabel.text = "Если ты слышал местные слухи о слуге, который убил своего хозяина и стал стражником, то это не я"
+
+func _on_answer4_pressed():
+	$RichTextLabel.text = "Ага. Всего хорошего."
+```
+
+Следующим NPC будет который выдает нам задание найти объект. Структура NPC следующая
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/7e395b2a-b1c2-4bf8-902d-d73bc5410e1d)
+
+Создаем скрипт у Area2D и создаем следующие переменные
+
+```gdscript
+var task = 0;
+var task_accept = false
+```
+
+Сначала добавим появлени и исчезновение диалога с NPC при входе в зону
+
+```gdscript
+func _on_guild_of_heroes_body_entered(body):
+	if body.name == "Player":
+		$Label_quest.visible = true
+		$Button.visible = true
+
+func _on_guild_of_heroes_body_exited(body):
+	if body.name == "Player":
+		$Label_quest.visible = false
+		$Button.visible = false
+```
+
+В ранее созданном глобальном скрипте доьбавим список в который мы будем добавлять и удалять задания
+
+
+```gdscript
+var tasks = []
+
+func add_task(task):
+	tasks.append(task)
+
+func remove_task(task):
+	tasks.erase(task)
+```
+
+Также нам нужно создать само яблоко, оно состоит из следующих узлов
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/82c99238-e46e-4a22-ad08-9c4d251496eb)
+
+Еще можно создать список текущих квестов, по сути это просто Label в который мы будем вносить текст
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/6a16229d-fb1c-433c-9626-17b97de5429b)
+
+Возвращаемся к скрипту зоны. Присоединяем сигнал к кнопке 
+
+```gdscript
+func _on_Button_pressed():
+	task_accept = true
+	$Label_quest.visible = false
+	$Button.visible = false
+	$"../../CanvasLayer/Quest_list/RichTextLabel".text += "Волшебное яблоко"
+	Quest.add_task(task)
+	#print("Current quest is: ", task)
+	task = 1
+	$"../Apple_point".visible = true
+```
+
+Теперь у нас на карте появляется яблоко которое нам нужно найти. Добавим у него сигнал при входе в него
+
+```gdscript
+func _on_Apple_point_body_entered(body):
+	if body.name == "Player":
+		if task == 1:
+			$"../Apple_point".visible = false
+			task = 2
+			$"../../CanvasLayer/Quest_list/RichTextLabel".text = "Текущие квесты: \n"
+			task_accept = true
+			$"../../CanvasLayer/Quest_list/RichTextLabel".text += "Вернись к искателям приключений"
+```
+
+Все что осталось дополнить вход в зону
+
+```gdscript
+func _on_guild_of_heroes_body_entered(body):
+	if body.name == "Player":
+		$Label_quest.visible = true
+		$Button.visible = true
+		if task == 2:
+			$Button.visible = false
+			Quest.remove_task(task)
+			$Label_quest.text = "Отлично! Мы подумаем над твоим запросом"
+			$Label_quest.visible = true
+```
+
+## Урок 3
+
+
