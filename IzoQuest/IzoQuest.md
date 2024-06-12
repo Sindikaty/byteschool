@@ -564,3 +564,5 @@ func _on_guild_of_heroes_body_entered(body):
 Для входа создаем зону 
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/b3ca2b6b-f0b6-481d-8309-4d7ee6111308)
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/86d94132-3cf8-44f4-8622-bfc04daba635)
