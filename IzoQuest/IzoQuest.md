@@ -454,7 +454,9 @@ func _on_guard_body_exited(body):
 		$Label.visible = false
 ```
 
-Следующим NPC будет который выдает нам задание найти объект. Структура NPC следующая
+## Урок 3
+
+Этот урок мы начнем с создания NPC который будет выдавать нам задание найти объект. Структура NPC следующая
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/7e395b2a-b1c2-4bf8-902d-d73bc5410e1d)
 
@@ -541,6 +543,24 @@ func _on_guild_of_heroes_body_entered(body):
 			$Label_quest.visible = true
 ```
 
-## Урок 3
+Также создадим стены нашей деревни. Для этого создадим `tilemap` со следующими параметрами `tileset`
 
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/2c59d124-1003-4d29-9485-e6fd1ccf2168)
 
+А также нужно включить автоматическую сортировку слоев у `tilemap`
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/74ef6760-a48b-435d-90fe-c0299212ff38)
+
+Получится примерно следующее
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/74f1cd9b-fe2a-470f-905e-71f2a63d9265)
+
+Также можно сделать таверну и попробовать добавить там квест на поиск предмета
+
+Таверна состоит из следующий узлов
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/0fad591c-bd92-499d-b657-bb2c815a13d2)
+
+Для входа создаем зону 
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/b3ca2b6b-f0b6-481d-8309-4d7ee6111308)
