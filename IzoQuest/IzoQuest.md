@@ -566,3 +566,14 @@ func _on_guild_of_heroes_body_entered(body):
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/b3ca2b6b-f0b6-481d-8309-4d7ee6111308)
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/86d94132-3cf8-44f4-8622-bfc04daba635)
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/df573500-e046-4641-b97f-0c9ebf887ae9)
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/f79d3ba1-9b8c-44e3-a57b-45bf086310c3)
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/0ebb27bd-ed23-4d7e-a90c-44cc8063e210)
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/ce99219c-d5b5-48f6-959c-cbcc1b738a76)
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/f1fb5c1a-4a43-48a2-94f1-362fe7beb981)
+
