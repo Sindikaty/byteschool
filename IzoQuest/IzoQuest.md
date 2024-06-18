@@ -567,6 +567,14 @@ func _on_guild_of_heroes_body_entered(body):
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/86d94132-3cf8-44f4-8622-bfc04daba635)
 
+Для указание точки спавна при выходе можно добавить следующее в код открывания сцены
+
+```gdscript
+$player.global_position = Vector2(511,659)
+```
+
+Скрипт бота
+
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/df573500-e046-4641-b97f-0c9ebf887ae9)
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/f79d3ba1-9b8c-44e3-a57b-45bf086310c3)
@@ -577,3 +585,88 @@ func _on_guild_of_heroes_body_entered(body):
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/f1fb5c1a-4a43-48a2-94f1-362fe7beb981)
 
+У таверны добавяем физические слои, чтобы нельзя было проходить сквозь стены
+
+Сделаем меню игры, для этого солздаем отдельную сцену и делаем ее для запуска первой
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/ce93da98-e596-4e04-a501-3297707d4c14)
+
+Состоит из следующий элементов
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/97cfcfd0-1fa2-4588-9f2b-f8f2390e5ff4)
+
+И выглядит примерно так
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/14496949-6822-48e2-a574-7312fd0ee278)
+
+Создадим сундук с которого будут выпадать монеты для покупки питомцев. Состоит из следующих узлов
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/f1e4d9d8-7b4f-41ce-a163-3e031bd55521)
+
+Создаем сцену с монеткой
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/027c17eb-c4a9-43f9-98a0-5c29342375b0)
+
+Код сундука
+
+```gdscript
+extends Area2D
+
+@export var coin_scene: PackedScene
+@export var min_coins = 1
+@export var max_coins = 5
+var player_in_range = false
+var use = false
+
+func _on_body_entered(body):
+	if body.name == "player":
+		$Label.visible = true
+		player_in_range = true
+		$Label.text = "Нажмите Е чтобы открыть сундук"
+
+func _process(delta):
+	if player_in_range and Input.is_action_just_pressed("use1") and use == false:
+		open_chest()
+		use = true
+
+func open_chest():
+	var coin_count = randi() % (max_coins - min_coins + 1) + min_coins
+	for i in range(coin_count):
+		var coin_instance = coin_scene.instantiate()
+		var chest_position = global_position
+		var offset = Vector2(randf() * 64 - 32, randf() * 64 - 32)  # Случайное смещение вокруг сундука
+		coin_instance.position = chest_position + offset
+		get_parent().add_child(coin_instance)
+	$Label.visible = false  # Скрыть метку после открытия сундука
+	player_in_range = false  # Игрок больше не в зоне сундука
+```
+
+Код монетки
+
+```gdscript
+extends Area2D
+
+func _on_body_entered(body):
+	if body.name == "player":
+		GlobalScript.Coins += 1
+		$"../../CanvasLayer/QuestList/Label".text = "Количество монет - " + str(GlobalScript.Coins)
+		queue_free()
+```
+
+И можно изменить торговца и добавить ему продажу петомцев за монетки
+
+```gdscript
+	if pet_count < 1 and GlobalScript.Coins >= 5:
+		var pet = pet_snake.instantiate()
+		pet_count += 1
+		pet.position = $".".position
+		get_parent().add_child(pet)
+		$"../../CanvasLayer/Pet_tailor/RichTextLabel".text = "Отлинчый выбор!"
+		GlobalScript.dialog = false
+	elif pet_count > 1 and GlobalScript.Coins >= 5:
+		$"../../CanvasLayer/Pet_tailor/RichTextLabel".text = "У тебя уже есть питомец"
+		GlobalScript.dialog = false
+	elif pet_count < 1 and GlobalScript.Coins <= 5:
+		$"../../CanvasLayer/Pet_tailor/RichTextLabel".text = "У тебя не хватает денег, сходи заработай"
+		GlobalScript.dialog = false
+```
