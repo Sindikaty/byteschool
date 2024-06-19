@@ -670,3 +670,7 @@ func _on_body_entered(body):
 		$"../../CanvasLayer/Pet_tailor/RichTextLabel".text = "У тебя не хватает денег, сходи заработай"
 		GlobalScript.dialog = false
 ```
+
+Пожилые анимации монеток
+
+![image](https://github.com/Sindikaty/byteschool/assets/158248099/4355c992-c96b-40f7-b88b-e3325d12ed9e)
