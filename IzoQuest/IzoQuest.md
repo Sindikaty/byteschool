@@ -567,23 +567,70 @@ func _on_guild_of_heroes_body_entered(body):
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/86d94132-3cf8-44f4-8622-bfc04daba635)
 
-Для указание точки спавна при выходе можно добавить следующее в код открывания сцены
-
-```gdscript
-$player.global_position = Vector2(511,659)
-```
-
 Скрипт бота
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/df573500-e046-4641-b97f-0c9ebf887ae9)
 
 ![image](https://github.com/Sindikaty/byteschool/assets/158248099/f79d3ba1-9b8c-44e3-a57b-45bf086310c3)
 
-![image](https://github.com/Sindikaty/byteschool/assets/158248099/0ebb27bd-ed23-4d7e-a90c-44cc8063e210)
+Скрипт NPC в таверне
 
-![image](https://github.com/Sindikaty/byteschool/assets/158248099/ce99219c-d5b5-48f6-959c-cbcc1b738a76)
+```gdscript
+var task = 0
+var task_accept = false
 
-![image](https://github.com/Sindikaty/byteschool/assets/158248099/f1fb5c1a-4a43-48a2-94f1-362fe7beb981)
+func _on_quest_npc_body_entered(body):
+	if body.name == "player":
+		$QuestNPC/Label.visible = true
+		$QuestNPC/Button.visible = true
+		if GlobalScript.object_take == true:
+			$QuestNPC/Button.visible = false
+			GlobalScript.remove_task(task)
+			$QuestNPC/Label.text = "Отлично! Мы подумаем над твоим запросом"
+			$QuestNPC/Label.visible = true
+			GlobalScript.object_take == false
+
+func _on_quest_npc_body_exited(body):
+	if body.name == "player":
+		$QuestNPC/Label.visible = false
+		$QuestNPC/Button.visible = false
+
+func _on_button_pressed():
+	task_accept = true
+	$QuestNPC/Label.visible = false
+	$QuestNPC/Button.visible = false
+	#$"../../../CanvasLayer/QuestList/RichTextLabel".text = "Не Волшебное яблоко"
+	GlobalScript.add_task(task)
+	task = 1
+	GlobalScript.quest_take = true
+
+func _on_ex_body_entered(body):
+	if body.name == "player":
+		GlobalScript.OutSide = true
+		get_tree().change_scene_to_file("res://node_2d.tscn")
+```
+
+Скрипт предмета который находится за пределами таверны ( у сцены деревни)
+
+```gdscript
+func _physics_process(delta):
+	if GlobalScript.quest_take == true:
+		$Buildings/Apple.visible = true
+	else:
+		$Buildings/Apple.visible = false
+	if GlobalScript.OutSide == true:
+		GlobalScript.OutSide = false
+		$Buildings/player.global_position = Vector2(511,659)
+
+func _on_taverna_body_entered(body):
+	if body.name == "player":
+		get_tree().change_scene_to_file("res://taverna.tscn")
+
+func _on_apple_body_entered(body):
+	if body.name == "player":
+		GlobalScript.quest_take = false
+		GlobalScript.object_take = true
+```
 
 У таверны добавяем физические слои, чтобы нельзя было проходить сквозь стены
 
