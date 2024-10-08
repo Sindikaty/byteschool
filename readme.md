@@ -1,2 +1,9 @@
 # BYTESCHOOL
-[Урок 1](CosmoShoot/CosmoShoot.md)
+
+
+
+[Лабиринт](lesson-1/labirint.md) <br>
+[Шутер](Shooter/Shooter.md)<br>
+[Сапер](Miner/Miner.md)<br>
+[Космошутер](CosmoShoot/CosmoShoot.md)<br>
+[Деревня в квестами](IzoQuest/IzoQuest.md)<br>
