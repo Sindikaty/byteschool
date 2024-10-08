@@ -10,3 +10,5 @@
 
 
 ## Scratch
+
+[Шутер с зомби](ShooterScratch/ShooterScratch.md)<br>
