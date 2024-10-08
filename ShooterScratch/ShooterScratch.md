@@ -101,3 +101,15 @@
 Код
 
 ![image](https://github.com/user-attachments/assets/e68ef358-9be7-4b44-8a3b-ab96543db1ff)
+
+Последним осталось добавить менюшку проигрыша
+
+![image](https://github.com/user-attachments/assets/59b383f6-51bb-4e5c-a75b-2529d5edc10a)
+
+Код
+
+![image](https://github.com/user-attachments/assets/2aac9f19-aada-4fc5-99e6-35c01d53023c)
+
+А также добавить у каждого спрайта остановку другим скриптов
+
+![image](https://github.com/user-attachments/assets/a27cd155-062a-4c1c-be06-a73278a24f10)
