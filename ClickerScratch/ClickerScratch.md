@@ -14,7 +14,7 @@
 
 ![image](https://github.com/user-attachments/assets/5cf6f238-a65d-4851-b409-16fd937b4f99)
 
-При страрте игры задаем знчения переменные и начальное положение наших врагов
+При страрте игры задаем значения переменным и начальное положение наших врагов
 
 ![image](https://github.com/user-attachments/assets/3a93dfae-3a7d-4f0b-83f1-5297e53bc83d)
 
