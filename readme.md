@@ -14,3 +14,4 @@
 ## Scratch
 
 [Шутер с зомби](ShooterScratch/ShooterScratch.md)<br>
+[Кликер](ClickerScratch/ClickerScratch.md)<br>
