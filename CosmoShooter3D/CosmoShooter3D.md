@@ -118,3 +118,82 @@ func _physics_process(delta):
 	transform.basis = transform.basis.orthonormalized()
 	...
 ```
+
+## Урок 2
+
+### Камера
+
+Создаем камеру у уровня и прикрепляем к нему скрипт
+
+![image](https://github.com/user-attachments/assets/f439a2b1-7437-4b01-9d32-349045864fbd)
+
+В нем создаем 3 экспортные переменные и 1 пустую переменную с целью для камеры
+
+```gdscript
+@export var lerp_speed = 3.0
+@export var target_path : NodePath
+@export var offset = Vector3.ZERO
+var target = null
+```
+
+При запуске камера должна сразу понимать цель и фокусироваться на ней. Для этого создадим метод _ready()
+
+```gdscript
+func _ready() -> void:
+	if target_path:
+		target = get_node(target_path)
+```
+
+Далее добавляем метод _physics_process(delta) и добавляем в неё условие. В случае если цель исчезнет вернется пустой таргет
+
+```gdscript
+func _physics_process(delta: float) -> void:
+	if !target:
+		return
+```
+
+Теперь создадим локальную переменную в которую сохраним копию преобразованной глобальной позиции таргета, относительно того насколько от него должна сместиться камера. Сделать это можно при помощи метода translated_local(). Для плавного перемещения камеры также применим интерполяцию для изменения её глобальной позиции. А также чтобы камера смотрела на корабль, а не в абстрактную точку, используем метод look_at().
+
+```gdscript
+func _physics_process(delta: float) -> void:
+	...
+	var target_xform = target.global_transform.translated_local(offset)
+	transform = global_transform.interpolate_with(target_xform,lerp_speed*delta)
+	look_at(target.global_transform.origin, target.transform.basis.y)
+```
+
+Не забываем выбрать target_path у камеры
+
+![image](https://github.com/user-attachments/assets/56451ea1-959c-4763-b29f-afb3c4d2f7e5)
+
+Можно сделать смену камеры у игрока, от первого лица и от 3го лица, для этого создадим скрипт у уровня. Создадим переменную которая будет хранить "номер" камеры
+
+```gdscript
+var curCamera = 1
+```
+
+Добавим условия на проверу нажатия кнопки, увеличение переменной будет означать изменение камеры
+
+```gdscript
+func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("nextCamera"):
+		curCamera += 1
+```
+
+Логика смены камера следующая
+
+```gdscript
+	match curCamera:
+		0:
+			$Player/Camera3D2.current = true
+		1:
+			$Camera3D.current = true
+```
+
+А также нужно не забыть добавить сброс переменной, иначе мы не сможем больше менять камеру
+```gdscript
+func _process(delta: float) -> void:
+	...
+		if curCamera == 2:
+			curCamera = 0
+```
