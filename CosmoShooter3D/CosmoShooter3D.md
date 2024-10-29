@@ -197,3 +197,54 @@ func _process(delta: float) -> void:
 		if curCamera == 2:
 			curCamera = 0
 ```
+
+Можно добавить солнце, состоит оно из следующий узлов
+  
+  📦Sun (Area3D) `Зона уничтожения игрока`<br>
+    ┣- 📂CollisionShape3D `Коллизия`<br>
+    ┣- 📂StaticBody3D`Тело солнца`<br>
+    ┣--- 📂CollisionShape3D `Коллизия`<br>
+    ┣--- 📂Node3D `Моделька солнца`<br>
+
+Добавим переменные
+
+```gdscript
+var timerStart = false
+var timer = 0
+```
+
+Код проверки на влете в солнце
+
+```gdscript
+func _process(delta: float) -> void:
+	...
+	$Sun/StaticBody3D.rotation.y += 0.001
+	if timerStart == true:
+		timer += delta
+		$"Player/OmniLight3D".visible = true
+	if timer >= 10:
+		print("tobi pizda")
+		$Player.queue_free()
+```
+
+Код на вход/выход из зоны
+
+```gdscript
+func _on_sun_body_entered(body: Node3D) -> void:
+	if body.name == "Player":
+		timerStart = true
+		print("aboba")
+
+func _on_sun_body_exited(body: Node3D) -> void:
+	if body.name == "Player":
+		timerStart = false
+		timer = 0
+		$"Player/OmniLight3D".visible = false
+		print("aboba1")
+```
+
+Анимация тревоги
+
+![image](https://github.com/user-attachments/assets/29f70f53-1788-4a9e-803c-3a5921540d05)
+
+![image](https://github.com/user-attachments/assets/c9901df7-003e-4413-8293-4a7386b32470)
