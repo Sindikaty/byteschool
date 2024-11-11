@@ -337,5 +337,38 @@ func _physics_process(delta):
 		$Marker3D2.fire()
 ```
 
+## Урок 4
+
+Создание врага.
+
+Создание модельки повторяет создание модельки игрока, поэтому ученики ее делают сами
+
+В скрипте создаем 3 переменные
+
+```gdscript
+var speed = 30
+var time = 0
+var hp = 100
+```
+
+Движение врага
+
+```gdscript
+func _physics_process(delta: float) -> void:
+	var dir = $"../Player".position - position
+	if dir.length() > 30:
+		velocity = -transform.basis.z * speed
+		move_and_collide(velocity * delta)
+	look_at($"../Player".position, Vector3.UP)
+```
+
+Стрельба
+```gdscript
+	time += delta
+	if time > 2:
+		$Marker3D.fire()
+		$Marker3D2.fire()
+		time = 0
+```
 
 
