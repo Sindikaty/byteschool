@@ -57,3 +57,8 @@
 Также для смены фона нужно добавить следующий код
 
 ![image](https://github.com/user-attachments/assets/44ea0f0f-e811-4260-bd87-06bb43325d50)
+
+Вариант если чученик хочет анимированных врагов
+
+![image](https://github.com/user-attachments/assets/24dfed84-6c00-4052-b3b2-012763f8666a)
+
