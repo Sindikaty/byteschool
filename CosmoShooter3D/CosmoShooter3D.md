@@ -248,3 +248,94 @@ func _on_sun_body_exited(body: Node3D) -> void:
 ![image](https://github.com/user-attachments/assets/29f70f53-1788-4a9e-803c-3a5921540d05)
 
 ![image](https://github.com/user-attachments/assets/c9901df7-003e-4413-8293-4a7386b32470)
+
+
+## Урок 3
+
+Создание стрельбы
+
+Пример пули и ее узлы
+
+![image](https://github.com/user-attachments/assets/0675bcd1-11f5-45c7-aab5-92f77c45459c)
+
+Отличие CharacterBody3D от AnimatableBody3D в том что последнего можно переместить только из кода, и на него не действуют внешние силы. 
+
+Далее создаем 3 переменные 
+
+```gdscript
+var dir
+var timer = 0
+var speed = 50
+```
+
+У пули должно быть задано правильное направление сразу с момента как она появится на главной сцене поэтому добавляем функцию ready()
+
+```gdscript
+func _ready() -> void:
+	if $"../Player".forward_speed > 1:
+		dir = (global_transform.basis.z.normalized() * - speed) * ($"../Player".forward_speed / 3)
+	else:
+		dir = global_transform.basis.z.normalized() * - speed
+```
+
+Далее создаём функцию _physics_process(delta). Добавляем в неё время жизни пули и move_and_collide()
+
+```gdscript
+func _physics_process(delta: float) -> void:
+	timer += delta
+	if timer > 5:
+		queue_free()
+	
+	var object = move_and_collide(dir*delta)
+```
+
+Код пули готов, теперь идём прописывать и обдумывать логику выстрела. Идём на сцену с персонажем и добавляем ему столько узлов Marker3D, сколько будет пушек. 
+
+![image](https://github.com/user-attachments/assets/7f7ba031-bdbc-4154-b6e3-7a0ade9c154a)
+
+Прикрепляем скрипт в маркерам и прописываем логику появления лазера
+
+```gdscript
+const bulletScene = preload("res://laser.tscn")
+
+
+func fire():
+	var bullet = bulletScene.instantiate()
+	bullet.global_position = global_position
+	bullet.rotation = global_rotation
+	Global.add(bullet)
+```
+
+Как можно заметить в последней строке мы используем глобальный скрипт, нам его для начала нужно создать.
+
+![image](https://github.com/user-attachments/assets/97e089a9-3494-4765-8958-578530cdd990)
+
+В глобальном скрипте прописываем переменную в которой будет храниться основная сцена и также создаём функцию которая будет спавнить пулю на этой сцене.
+
+```gdscript
+var lvl = null
+
+func add(obj):
+	lvl.add_child(obj)
+```
+
+Переходим на сцену уровня и в методе _ready() и обращаясь к глобальной переменной lvl определяем, что в ней хранится основная сцена при помощи self.
+
+```gdscript
+func _ready() -> void:
+	Global.lvl = self
+```
+
+Остается лишь задать клавишы для выстрела и сам выстрел (скрипт игрока)
+
+![image](https://github.com/user-attachments/assets/80c87fb7-522e-480e-80e1-fbd484d1abcd)
+
+```gdscript
+func _physics_process(delta):
+	if Input.is_action_just_pressed("Fire"):
+		$Marker3D.fire()
+		$Marker3D2.fire()
+```
+
+
+
