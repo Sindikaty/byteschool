@@ -1,4 +1,4 @@
-# CosmoShooter3D
+![image](https://github.com/user-attachments/assets/e5eb53d4-c170-4fbb-9973-1c1b03801e44)# CosmoShooter3D
 
 ## Урок 1
 
@@ -371,4 +371,77 @@ func _physics_process(delta: float) -> void:
 		time = 0
 ```
 
+Функция получения урона
 
+```gdscript
+func dmg():
+	hp -= 10
+	if hp <= 0:
+		queue_free()
+```
+
+Скрипт лазера. Тут мы проверяем объект столкновения и наличие у него метода dmg
+
+```gdscript
+	var object = move_and_collide(dir*delta)
+	if object:
+		if object.get_collider().has_method("dmg"):
+			object.get_collider().dmg()
+		queue_free()
+```
+
+Можно создать UI не как мы делаем обычно поверх игры, а встроить прямо в корабль, для этого для начала создаем что мы хотим видет в интервейсе, я добавил хп
+
+![image](https://github.com/user-attachments/assets/d6ea871d-3b2e-45d4-9987-a9a679c93ea6)
+
+Далее идем в сценуц игрока и добавляем 2 узла, SubViewport нужен для передачи самого интерфейса 
+
+![image](https://github.com/user-attachments/assets/aaeaa2ec-754b-42f1-87da-fa441aa6f6e2)
+
+Вторым узлом будет MeshInstance3D. Он будет играть роль экрана
+
+![image](https://github.com/user-attachments/assets/2623d2f7-0f98-4194-8ef6-bbe302ecd34e)
+
+У меша также нужн создать пустой material_override
+
+![image](https://github.com/user-attachments/assets/8de35f44-e53c-4987-99bb-855d8a5b7740)
+
+Переходим к коду и в ready прописываем что будем передавать в MeshInstance3D
+
+```gdscript
+func _ready():
+	var viewport = $SubViewport
+	$SubViewport.set_clear_mode(SubViewport.CLEAR_MODE_ONCE)
+
+	$MeshInstance3D.material_override.albedo_texture = viewport.get_texture()
+```
+
+А также нужно не забыть добавить изменение хп при получении урона
+
+```gdscript
+func _physics_process(delta):
+	$SubViewport/ui/ProgressBar.value = hp
+```
+
+Добавление ботов работает по той же логике, что и добавление пулью
+
+```gdscript
+const enemyScene = preload("res://Scenes/Player/enemy.tscn")
+var random_mark = 0
+
+func spawn():
+	print(random_mark)
+	var enemy = enemyScene.instantiate()
+	match random_mark:
+		1:
+			enemy.global_position = $".".global_position
+		2:
+			enemy.global_position = $"../Marker3D2".global_position
+		3:
+			enemy.global_position = $"../Marker3D3".global_position
+	Global.add_enemy(enemy)
+
+func _on_timer_timeout():
+	random_mark = randi_range(1,3)
+	spawn()
+```
