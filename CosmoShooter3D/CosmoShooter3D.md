@@ -445,3 +445,65 @@ func _on_timer_timeout():
 	random_mark = randi_range(1,3)
 	spawn()
 ```
+
+
+
+Менюшку смерти ученик делаем сам, главное меню визуал делает сам, с рекордом делаем вместе
+
+
+![image](https://github.com/user-attachments/assets/1f52e26f-02a4-4632-997c-c7abea1d500f)
+
+
+![image](https://github.com/user-attachments/assets/3a4c21ff-e6a8-40b4-8626-dbec2549554b)
+
+Для рекордов нам понадобится переменна очков, добавить добавление очков ученик также может сам
+
+![image](https://github.com/user-attachments/assets/8359b0b9-c6a0-454a-878e-1f70c9d59520)
+
+Переходим к рейтингу, для начала обсуждаем с учениками когда мы будет сохранять наш рекорд (при смерти игрока). Тут мы вызываем метод save у менюшки и передаем наши очки
+
+```gdscript
+func dmg():
+	hp -= 10
+	if hp <= 0:
+		queue_free()
+		get_parent().find_child("Menu").save(str(int(Global.Score)))
+```
+
+Переходим к созданию метода save
+
+```gdscript
+func save(save_data):
+	var file = FileAccess.open("res://save_data.txt", FileAccess.WRITE)
+	file.store_string(save_data)
+```
+
+Теперь при смерти у нас будет создаваться файл с нашим текущим счетом. Добавим вывод нашего рекорда в меню, для этого создадим метод loading() который будет считывать файл
+
+```gdscript
+func loading():
+	var file = FileAccess.open("res://save_data.txt", FileAccess.READ)
+	if file:
+		var load_data = file.get_as_text()
+		return load_data
+	else:
+		return "Список рекордов пуст"
+```
+
+Сам вывод рекорда на экран
+
+```gdscript
+func _ready() -> void:
+	get_tree().paused = true
+	$Label.text = "Лучший счет: \n"
+	$Label.text += loading()
+```
+
+Последним штрихом явлется проверка на то является ли нынешний счет рекордным
+```gdscript
+var record = 0
+func save(save_data):
+	if int(record) < int(save_data):
+		var file = FileAccess.open("res://save_data.txt", FileAccess.WRITE)
+		file.store_string(save_data)
+```
