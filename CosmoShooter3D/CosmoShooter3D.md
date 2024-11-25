@@ -507,3 +507,28 @@ func save(save_data):
 		var file = FileAccess.open("res://save_data.txt", FileAccess.WRITE)
 		file.store_string(save_data)
 ```
+
+
+
+```gdscript
+@export var min_pitch_scale = 0.8
+@export var max_pitch_scale = 1.5
+
+@export var min_volume = -35.0
+@export var max_volume = 0.0
+
+func _ready():
+	...
+	$AudioStreamPlayer3D.play()
+
+func _physics_process(delta):
+	...
+	update_flight_sound()
+
+func update_flight_sound():
+	var speed_ratio = abs(forward_speed) / max_speed
+
+	$AudioStreamPlayer3D.pitch_scale = lerp(min_pitch_scale, max_pitch_scale, speed_ratio)
+
+	$AudioStreamPlayer3D.volume_db = lerp(min_volume, max_volume, speed_ratio)
+```
