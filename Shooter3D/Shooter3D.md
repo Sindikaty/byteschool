@@ -47,9 +47,38 @@ var camera_rotation : Vector3 # изменение вращения в прос�
 @export var _camera_contoller : Camera3D
 ```
 
+Далее для камеры мы будет использовать встроенный метод `_unhandled_input`, давайте разберемся в чем разница между `_unhandled_input` и `_input`. Для этого создадим тестовую сцену состоящую из следующих узлов
 
+![image](https://github.com/user-attachments/assets/7a8a73d5-760f-4f5e-8c72-6a70ce642006)
 
+А в коде поочереднем посмотирм разницу в инпутах
 
+![image](https://github.com/user-attachments/assets/7e49df75-7049-4135-a79f-f33de1cab6fa)
 
+Как можно увидеть _input работает всегда, а _unhandled_input при вводе текста перестает считывать движение мышью внутри LineEdit
 
+Создаем метод `_unhandled_input` и делаем проверку на то, что если mouse_input == true, тогда мы изменяем значение y в зависимости от того куда ведем мышь
 
+```gdscript
+func _unhandled_input(event: InputEvent) -> void:
+	mouse_input = event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
+	if mouse_input:
+		tilt_input = -event.relative.y * 0.02
+	print(Vector2(0,tilt_input))
+```
+
+В данной функции мы увеличиваем mouse_rotation на tilt_input, после чего передаем mouse_rotation в camera_rotation. Далее изменяем basis у камеры, однако он отвечает за 3 параметра - position, rotation, scale. Нам же нужно изменять лишь rotation. Для этого создаем новй экземпляр Basis, а у него метод from_euler который позволить сделать лишь изменение вращения
+
+```gdscript
+func update_camera(delta):
+	mouse_rotation.x += tilt_input * delta 
+	camera_rotation = Vector3(mouse_rotation.x, 0.0, 0.0)
+	_camera_contoller.transform.basis = Basis.from_euler(camera_rotation)
+```
+
+Нам остается лишь добавить вызов нашего метода в `_physics_process`
+
+```gdscript
+func _physics_process(delta: float) -> void:
+	update_camera(delta)
+```
