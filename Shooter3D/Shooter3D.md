@@ -82,3 +82,85 @@ func update_camera(delta):
 func _physics_process(delta: float) -> void:
 	update_camera(delta)
 ```
+
+Теперь нам нужно сбрасывать tilt_input когда не происходить инпута мышью
+
+```gdscript
+func update_camera(delta):
+	...
+	tilt_input = 0.0
+```
+
+Теперь сделаем движение камеров влево вправо, для этого создадим новую переменную
+
+```gdscript
+var rotation_input : float
+```
+
+Добавляем rotation_input в _unhandled_input
+
+```gdscript
+func _unhandled_input(event: InputEvent) -> void:
+	...
+	if mouse_input:
+		rotation_input = -event.relative.x * 0.2
+```
+
+Для движение камерыф влево/вправо нам осталось изменить метод update_camera(), добавив изменение ротации по y
+
+```gdscript
+func update_camera(delta):
+	...
+	mouse_rotation.y += rotation_input * delta 
+	...
+```
+
+Также необходимо, чтобы при движении камерой игрок также поворачивался вместе с ней, для этого создадим еще одну переменную
+
+```gdscript
+var player_rotation : Vector3
+```
+
+И изменим метод update_camera()
+
+```gdscript
+func update_camera(delta)
+	...
+	player_rotation = Vector3(0.0,mouse_rotation.y,0.0)
+	...
+	global_transform.basis = Basis.from_euler(player_rotation)
+	rotation_input = 0.0
+```
+
+Теперь ограничим вращение камеры, чтобы она не вращалась у нас на все 360 градусов. Для этого создадим новые экспортные переменные
+
+```gdscript
+@export var _tilt_down_limit := deg_to_rad(-90.0)
+@export var _tilt_up_limit := deg_to_rad(90.0)
+@export var mouse_sensitivity : float = 4.5
+```
+
+Для начала изменим _unhandled_input, добавив вместо числа переменную mouse_sensitivity
+
+```gdscript
+func _unhandled_input(event: InputEvent) -> void:
+	...
+	if mouse_input:
+		rotation_input = -event.relative.x * mouse_sensitivity
+		tilt_input = -event.relative.y * mouse_sensitivity
+```
+
+Теперь делаем ограничение поворота камеры
+
+```gdscript
+func update_camera(delta):
+	...
+	mouse_rotation.x = clamp(mouse_rotation.x, _tilt_down_limit, _tilt_up_limit)
+```
+
+Также ограничим вращение камеры по оси z, во избежании каких-либо багов
+```gdscript
+func update_camera(delta):
+	...
+	_camera_contoller.rotation.z = 0.0
+```
