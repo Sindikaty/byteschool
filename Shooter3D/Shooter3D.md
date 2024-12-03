@@ -164,3 +164,6 @@ func update_camera(delta):
 	...
 	_camera_contoller.rotation.z = 0.0
 ```
+
+УРовень мы будет накидывать из CSGBox3D, можно использовать аддон 
+![image](https://github.com/user-attachments/assets/c7f7391a-9d45-48b6-854e-d2e374ae6933)
