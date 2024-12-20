@@ -165,5 +165,70 @@ func update_camera(delta):
 	_camera_contoller.rotation.z = 0.0
 ```
 
-УРовень мы будет накидывать из CSGBox3D, можно использовать аддон 
+Тестовый уровень можно накидывать из CSGBox3D, можно использовать аддон 
 ![image](https://github.com/user-attachments/assets/c7f7391a-9d45-48b6-854e-d2e374ae6933)
+
+Создание основной картрыф можно сделать при помощи GridMap или при помощи скачивания моделей карт
+
+# Создание оружия персонажа и их анимаций
+
+Для начала качаем любую понравившуюся модельку 
+
+![image](https://github.com/user-attachments/assets/5e4eca95-3354-488e-9d36-718353ae1524)
+
+
+Создаем отдельную папку для оружия и перекидываем его в наш проект
+
+![image](https://github.com/user-attachments/assets/e6aaeb73-76e9-4680-bd4d-062a958ef5aa)
+
+Открываем скаченный файл как новую унаследованную сцену
+
+![image](https://github.com/user-attachments/assets/d1d71173-04cf-40de-85ec-a99a9cf1a212)
+
+Можн сразу посмотреть анимации и если все устраивает нажимаем открыть в редакторе
+
+![image](https://github.com/user-attachments/assets/a67ea330-5c65-4b5e-b759-2ff3c2d6f624)
+
+После чео сохраняем нашу модельку как сценуэ. Теперь при необохимости мы можем редактировать анимации по времени, скорости и т.п.
+
+Добавляем модельку к камере
+
+![image](https://github.com/user-attachments/assets/5ade23ce-c821-499c-b39f-bb671ba293b1)
+
+И настраиваем то как игрок будет видеть оружие. Для удобства можно выбрать 2 окна и в одном открыть предпросмотр камеры, а в другом настраивать само положение
+
+![image](https://github.com/user-attachments/assets/63d3a739-b5a7-488b-bb4c-2c3681b2dc1c)
+
+![image](https://github.com/user-attachments/assets/27cf652a-8565-4a89-9e58-3fdcc18ef43c)
+
+Если встроенное движение удаляли нужно будет его сделать, если оставляли можно запустить игру и посмотреть как сейчас это выглядит
+
+![image](https://github.com/user-attachments/assets/34e511c7-203b-4f1d-8ffa-29e15af8c91a)
+
+
+## Создание выстрела и анимаций
+
+Для выстрела мы будем использовать RayCast, добавляем его к камере
+
+![image](https://github.com/user-attachments/assets/0b3290ca-eff1-49d3-99ed-4cfbf2c90989)
+
+Для проверки работоспособности raycast можно включить отладку
+
+![image](https://github.com/user-attachments/assets/aa9f9306-0e9b-4d47-b508-4c474bcf30c6)
+
+raycast при наведении на объекты должен становится красным
+
+Переходим к созданию выстрела
+
+
+
+
+
+
+
+
+
+
+
+
+
