@@ -220,6 +220,96 @@ raycast при наведении на объекты должен станов�
 
 Переходим к созданию выстрела
 
+```gdscript
+	# Анимация выстрела
+	if Input.is_action_just_pressed("shoot") and ray_cast.is_colliding():
+		animations.play("Rig|AK_Shot")
+	# Анимация хотьбы
+	if velocity and animations.current_animation != "Rig|AK_Shot":
+		animations.play("Rig|AK_Walk")
+	elif velocity == Vector3.ZERO and animations.current_animation != "Rig|AK_Shot" or animations.current_animation != "AK_shoot_auto":
+		animations.play("RESET")
+```
+
+Начнем создания выстрела от пуль, расмер пусть ученик выберет сам
+
+Узлы
+
+![image](https://github.com/user-attachments/assets/07ee05ce-16eb-4e23-977e-74f78d1cfe27)
+
+Скрипт
+
+![image](https://github.com/user-attachments/assets/50296673-1173-4381-ae50-17a19fcef517)
+
+Анимация
+
+![image](https://github.com/user-attachments/assets/bf547459-7901-456b-8769-205fe89be800)
+
+Переходим в скрипт игрока, сделась создаем переменную в которой будет хранится сцена от следа пуль и создаем функцию по созданию клонов
+
+```gdscript
+@onready var decal = preload("res://guns/decal.tscn")
+
+func decal_spawn():
+	var col_point = ray_cast.get_collision_point()
+	var b = decal.instantiate()
+	ray_cast.get_collider().add_child(b)
+	b.global_transform.origin = col_point
+```
+
+А также не забываем добавить ее в функцию стрельбы
+
+```gdscript
+	if Input.is_action_just_pressed("shoot") and ray_cast.is_colliding():
+		animations.play("Rig|AK_Shot")
+		decal_spawn()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
