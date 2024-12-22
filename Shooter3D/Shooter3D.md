@@ -281,9 +281,25 @@ func decal_spawn():
 
 Можно подобовлять лампы освещение в коридорах (можно также моргающие)
 
-
-
-
+```gdscript
+func decal_spawn():
+	if fire_delay == false:
+		var col_nor = ray_cast.get_collision_normal()
+		print(col_nor)
+		var col_point = ray_cast.get_collision_point()
+		var b = decal.instantiate()
+		ray_cast.get_collider().add_child(b)
+		b.global_transform.origin = col_point
+		if col_nor == Vector3.UP:
+			b.rotation_degrees.x = 90
+		elif col_nor == Vector3.DOWN:
+			b.rotation_degrees.x = -90
+		elif col_nor != Vector3.UP:
+			b.look_at(col_point - col_nor, Vector3(0,1,0))
+		fire_delay = true
+		await animations.animation_finished
+		fire_delay = false
+```
 
 
 
