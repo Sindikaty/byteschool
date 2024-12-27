@@ -1,3 +1,4 @@
+```gdscript
 func _on_spot_area_body_entered(body):
 	if body.name == "player":
 		is_player_in_area = true
@@ -41,3 +42,55 @@ func _on_timer_1_timeout() -> void:
 	$LeftSide/RayCast3D.enabled = true
 	$LeftSide/RayCast3D2.enabled = true
 	$LeftSide/RayCast3D3.enabled = true
+```
+```gdscript
+func _process(delta):
+	move_in_circle(delta)
+	if bot_death == false:
+		deal_damage()
+
+
+func deal_damage():
+# левая сторона
+	if $LeftSide/RayCast3D.get_collider():#
+		print($LeftSide/RayCast3D.get_collider())
+		print('$LeftSide/RayCast3D')
+		var collider = $LeftSide/RayCast3D.get_collider()
+		if collider.is_in_group("Player"):
+			collider.get_damage_player()
+	
+	
+	if $LeftSide/RayCast3D2.get_collider():#
+		print('$LeftSide/RayCast3D2')
+		var collider = $LeftSide/RayCast3D2.get_collider()
+		if collider.is_in_group("Player"):
+			collider.get_damage_player()
+			
+	if $LeftSide/RayCast3D3.get_collider():#
+		print('$LeftSide/RayCast3D3')
+		var collider = $LeftSide/RayCast3D3.get_collider()
+		if collider.is_in_group("Player"):
+			collider.get_damage_player()
+# ------------------------------------
+
+# правая сторона
+	if $RightSide/RayCast3D.get_collider():
+		#$RightSide/RayCast3D.get_collider(Object.has_method("death"))
+		print("")
+		var collider = $RightSide/RayCast3D.get_collider()
+		if collider.is_in_group("Player"):
+			collider.get_damage_player()
+		
+	
+	if $RightSide/RayCast3D2.get_collider(): #
+		print('$RightSide/RayCast3D2')
+		var collider = $RightSide/RayCast3D2.get_collider()
+		if collider.is_in_group("Player"):
+			collider.get_damage_player()
+	
+	if $RightSide/RayCast3D3.get_collider(): #
+		print('$RightSide/RayCast3D3')
+		var collider = $RightSide/RayCast3D3.get_collider()
+		if collider.is_in_group("Player"):
+			collider.get_damage_player()
+```
