@@ -281,6 +281,8 @@ func decal_spawn():
 
 Можно подобовлять лампы освещение в коридорах (можно также моргающие)
 
+Сейчас декаль правильно ставиться лишь при стрельбе в пол, для того чтобы это исправить доработаем нашу функцию ее спавна + нужно в инспекторе повернуть декаль по х на -90
+
 ```gdscript
 func decal_spawn():
 	if fire_delay == false:
@@ -301,14 +303,23 @@ func decal_spawn():
 		fire_delay = false
 ```
 
+Перейдем к созданию врагов
 
+Для начала с сайта mixamo нам нужно выбрать модельку и подобрать для нее анимации (idle, walk, attack, death) в формате fbx.
 
+Сейчас у нас 4 и более моделек, а нам нужна 1 со всеми анимациями. Для этого нам нужно будет сохранить все анимации как анимации
 
+![image](https://github.com/user-attachments/assets/7e5c8e69-16ee-46b1-afd8-828d25489a6d)
 
+![image](https://github.com/user-attachments/assets/cdea4470-e261-47e6-a32f-a6f6e07bec08)
 
+![image](https://github.com/user-attachments/assets/244f8905-cf12-46eb-b5d3-c6b4b6a71cde)
 
+Чтобы доабвить сохраненные анимации в том же меню есть следующая кнопка
 
+![image](https://github.com/user-attachments/assets/ec2a18df-b435-4731-9c03-312af20c64a8)
 
+Коллизию добавляем по стандарту
 
 
 
