@@ -321,34 +321,51 @@ func decal_spawn():
 
 Коллизию добавляем по стандарту
 
+# Движение бота
+
+Для начала создадим NavigationRegion3D и создаем в нем NavigationMesh
+
+Далее добавляем NavigationAgent3D к врагу
+
+![image](https://github.com/user-attachments/assets/122ae75e-6f9c-48fc-958b-411c6ac124b2)
+
+Добавляем скрипт боту и удаляем все кроме гравитации, и переменную которая будет хранить NavigationAgent3D
+
+```gdscript
+@onready var nav: NavigationAgent3D = $NavigationAgent3D
+```
+
+А также внутри _physics_process создадим переменную хранящую направление движения
+
+```gdscript
+	var direction = Vector3()
+```
+
+И последней переменной будет экспортная переменная хранящая цель к которой мы будем двигать врага
+
+```gdscript
+@export var target : CharacterBody3D
+```
+
+Перейдем к созданию движения
+
+```gdscript
+	nav.target_position = target.global_position
+	
+	direction = nav.get_next_path_position() - global_position
+	direction = direction.normalized()
+	
+	velocity = velocity.lerp(direction*SPEED, 10* delta)
+```
+
+Теперь бот ходить за нами однако делает это не всегда смотря на нас, для этого добавим метод look_at()
+
+```gdscript
+	look_at(target.global_position, Vector3.UP)
+```
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![image](https://github.com/user-attachments/assets/dcb6318b-b843-4f18-8b53-93fa351998b8)
 
 
 
