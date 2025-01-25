@@ -364,12 +364,117 @@ func decal_spawn():
 	look_at(target.global_position, Vector3.UP)
 ```
 
+Анимация ходьбы и стояния на месте
 
-![image](https://github.com/user-attachments/assets/dcb6318b-b843-4f18-8b53-93fa351998b8)
+```gdscript
+	if velocity.z or velocity.x:
+		$AnimatedSprite3D.play("walk")
+	else:
+		$AnimatedSprite3D.play("idle")
+```
 
+Включении анимации при атаке
 
+Для начала добавить raycast который будет учитывать максиальную длину атаки и в случае коллайда будет срабатывать анимация
 
+![image](https://github.com/user-attachments/assets/23c22221-f352-4ff7-8013-fa1d248e7c74)
 
+```gdscript
+	if not $AttackSensor.is_colliding():
+		if velocity.z or velocity.x:
+			$AnimatedSprite3D.play("walk")
+		else:
+			$AnimatedSprite3D.play("idle")
+	else:
+		$AnimatedSprite3D.play("attack")
+```
 
+Также сделаем остановку бота при ударе
 
+```gdscript
+	if not $AttackSensor.is_colliding():
+		velocity = velocity.lerp(direction*SPEED, 10 * delta)
+	else:
+		velocity = Vector3()
+```
+
+Сейчас у нас появляется 1 проблема. бот атакует всё, с чем сталкивается, а нам нужно лишь с игроком, для этого переработаем условие
+Само движение
+```gdscript
+	if not $AttackSensor.is_colliding():
+		velocity = velocity.lerp(direction*SPEED, 10 * delta)
+	elif $AttackSensor.get_collider().name == "player":
+		velocity = Vector3()
+```
+
+И анимации
+```gdscript
+	if not $AttackSensor.is_colliding():
+		if velocity.z or velocity.x:
+			$AnimatedSprite3D.play("walk")
+		else:
+			$AnimatedSprite3D.play("idle")
+	elif $AttackSensor.get_collider().name == "player":
+		$AnimatedSprite3D.play("attack")
+```
+
+Добавим хп
+
+```gdscript
+func damage():
+	randomize()
+	hp -= randi_range(5,15)
+	print(hp)
+```
+
+И нужно ее вызвать у игрока. Добавим ее в функцию decal_spawn()
+
+```gdscript
+	if fire_delay == false:
+		if ray_cast.get_collider().name == "enemy":
+			ray_cast.get_collider().damage()
+```
+
+Также можно поменять то, что сейчас выстрелить в воздух нельзя, лишь когда есть объект выстрела
+```gdscript
+	if Input.is_action_just_pressed("shoot"):
+		animations.play("Rig|AK_Shot")
+		if ray_cast.is_colliding():
+			decal_spawn()
+```
+
+Добавим смерть боту, сейчас у него хп просто уходят в минус
+
+```gdscript
+func damage():
+	randomize()
+	hp -= randi_range(5,15)
+	print(hp)
+	if hp <= 0:
+		$AnimatedSprite3D.play("death")
+		set_physics_process(false)
+
+```
+
+А также сделаем так, что все предыдущие анимации работают лишь тогда, когда текущая анимация не смерть
+
+```gdscript
+	if $AttackSensor.current_animation != "death":
+		if not $AttackSensor.is_colliding():
+			if velocity.z or velocity.x:[](url)
+				$AnimatedSprite3D.play("walk")
+			else:
+				$AnimatedSprite3D.play("idle")
+		elif $AttackSensor.get_collider().name == "player":
+			$AnimatedSprite3D.play("attack")
+```
+
+Добавим отключение коллизии и рэйкаста при смерти
+```gdscript
+	if hp <= 0:
+		$AnimatedSprite3D.play("death")
+		set_physics_process(false)
+		$CollisionShape3D.disabled = true
+		$AttackSensor.enabled = false
+```
 
