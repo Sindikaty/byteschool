@@ -478,3 +478,82 @@ func damage():
 		$AttackSensor.enabled = false
 ```
 
+Создадим хп у игрока
+
+```gdscript
+var hp = 100
+
+func damage():
+	randomize()
+	hp -= randi_range(5,15)
+	print(hp)
+	if hp <= 0:
+		get_tree().paused = true
+```
+
+Теперь где-то нужно добавить вызов этой функции, делать мы это будем в скрипте бота, когда он останавливается для атаки
+```gdscript
+	elif $AttackSensor.get_collider().name == "player":
+		velocity = Vector3()
+		target.damage()
+```
+
+Сейчас он нас дамажит, но убивает мгновенно. Для того чтобы это пофиксить нам нужно переработать само получение урона, добавим дилей для дамага, и условие его проверки
+```gdscript
+var damage_delay = 1.3
+	...
+	elif $AttackSensor.get_collider().name == "player":
+		velocity = Vector3()
+		damage_delay -= delta
+		if damage_delay <= 0:
+			target.damage()
+			damage_delay = 1.3 * 2
+```
+
+Сейчас он стал работать лучше, однако проблемы остались. Если подходить и отходить от бота урон будет производится не в нужный тайминг, из-за того, что наш таймер убавляется всегда, а в изначальное значение не возвращается в случае если игрок успел отойти. Вновь доработаем функцию
+```gdscript
+	if not $AttackSensor.is_colliding():
+		velocity = velocity.lerp(direction*SPEED, 10 * delta)
+		damage_delay = 1.3
+```
+
+UI
+Тут по желанию, можно добавить хп игрока, можно попробовать добавить патроны и перезарядку
+
+Функция сохранения в скрипте уровня
+```gdscript
+func saving():
+	var file = FileAccess.open("res://save_data.txt", FileAccess.WRITE)
+	var save_data = {}
+	for i in get_tree().get_nodes_in_group("save"):
+		save_data[i.name] = i.save()
+	file.store_var(save_data)
+```
+Функция save у игрока и бота
+```gdscript
+func save():
+	var data = {
+		"hp": hp,
+		"position" : position
+	}
+	return data
+```
+
+Функция загрузки
+```gdscript
+func loading():
+	var file = FileAccess.open("res://save_data.txt", FileAccess.READ)
+	if !FileAccess.file_exists("res://save_data.txt"):
+		return
+	var load_data = file.get_var()
+	for i in get_tree().get_nodes_in_group("save"):
+		i.Load(load_data[i.name])
+```
+
+Функции Load у игрока и бота
+```gdscript
+func Load(data):
+	hp = data['hp']
+	position = data['position']
+```
+
