@@ -557,3 +557,75 @@ func Load(data):
 	position = data['position']
 ```
 
+Добавить магазин (скрипт игрока). 1 из вариантов, переработаем структуру функции стрельбы, чтобы все работало корректно и красиво
+
+```gdscript
+	if max_ammo >= ammo and ammo > 0:
+		if Input.is_action_just_pressed("shoot"):
+			shoot()
+```
+
+```gdscript
+func shoot():
+	animations.play("Rig|AK_Shot")
+	if fire_delay == false:
+		if ray_cast.is_colliding():
+			decal_spawn()
+		fire_delay = true
+		await animations.animation_finished
+		ammo -= 1
+		fire_delay = false
+```
+
+```gdscript
+func decal_spawn():
+	if ray_cast.get_collider().name == "enemy":
+		ray_cast.get_collider().damage()
+	var col_nor = ray_cast.get_collision_normal()
+	var col_point = ray_cast.get_collision_point()
+	var b = decal.instantiate()
+	ray_cast.get_collider().add_child(b)
+	b.global_transform.origin = col_point
+	if col_nor == Vector3.UP:
+		b.rotation_degrees.x = 90
+	elif col_nor == Vector3.DOWN:
+		b.rotation_degrees.x = -90
+	elif col_nor != Vector3.UP:
+		b.look_at(col_point - col_nor, Vector3(0,1,0))
+```
+
+UI игрока
+
+![image](https://github.com/user-attachments/assets/466c041d-5411-4788-86ae-e72abc706c93)
+
+По скрипту все просто
+
+![image](https://github.com/user-attachments/assets/d7d393ee-4c5a-4bf2-acb5-7b7a26816cb7)
+
+Перейдем к перезарядке
+
+```gdscript
+func reload():
+	if is_reloading or ammo == max_ammo:
+		return  # Если уже идет перезарядка или обойма полная, ничего не делаем
+
+	is_reloading = true
+	last_ammo = ammo  # Сохраняем текущее количество патронов перед перезарядкой
+	var last_animation = "Rig|AK_Reload"  # Запоминаем название анимации
+	animations.play(last_animation)  # Запускаем перезарядку
+	# Ждем завершения анимации, но при этом следим, не поменялась ли она раньше времени
+	while animations.is_playing():
+		if animations.current_animation != last_animation:
+			ammo = last_ammo - 1  # Если анимация сменилась принудительно, перезарядка отменяется
+			is_reloading = false
+			return
+		await get_tree().process_frame  # Проверяем каждую кадр
+	# Если мы вышли из цикла без прерывания, значит анимация завершилась нормально
+	ammo = max_ammo
+	is_reloading = false  # Разрешаем следующую перезарядку
+```
+
+
+
+
+
