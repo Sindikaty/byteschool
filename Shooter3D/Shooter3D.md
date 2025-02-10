@@ -517,9 +517,6 @@ var damage_delay = 1.3
 		damage_delay = 1.3
 ```
 
-UI
-Тут по желанию, можно добавить хп игрока, можно попробовать добавить патроны и перезарядку
-
 Функция сохранения в скрипте уровня
 ```gdscript
 func saving():
@@ -605,6 +602,12 @@ UI игрока
 Перейдем к перезарядке
 
 ```gdscript
+	if Input.is_action_just_pressed("reload"):
+		last_ammo = ammo
+		reload()
+```
+
+```gdscript
 func reload():
 	if is_reloading or ammo == max_ammo:
 		return  # Если уже идет перезарядка или обойма полная, ничего не делаем
@@ -624,6 +627,113 @@ func reload():
 	ammo = max_ammo
 	is_reloading = false  # Разрешаем следующую перезарядку
 ```
+
+## Доп по ботам
+
+Сейчас все боты которых мы добавляем постоянно идут за нами, что не совсем логично, сделаем так, что боты идут к нам если мы у них в прямой видимости или находимся где-то рядом, а также добавим, что если мы будем в месте где боты нас не могут достать, они уходили на свою стартовую позицию
+
+Для добавление преследования ботом игрока только в случае когда игрок в зоне агра и не застеной нужно добавить следующие узлы
+
+![image](https://github.com/user-attachments/assets/693a9b74-a5be-4446-b727-a60cdfe3d7c9)
+
+Переменные которые нам понадобятся
+
+```gdscript
+var bot_chasing = false
+var in_agro_area = false
+@export var detection_area: Area3D  # Зона агро
+@export var agro_ray_cast: RayCast3D  # RayCast для проверки видимости
+```
+
+И переработанный код, в котором будет удобно что-либо нажодить
+```gdscript
+func _physics_process(delta: float) -> void:
+	print(bot_chasing)
+	print(in_agro_area)
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+	AgroCollide(delta)
+	if bot_chasing == true:
+		update_path_to_target(delta)
+	elif bot_chasing == false:
+		velocity.x = 0
+		velocity.z = 0
+		agro_ray_cast.target_position = Vector3(0,0,-4.5)
+	move_and_slide()
+```
+
+Для начала добавим переработаем функцию _physics_process, выделив из нее функцию преследования
+
+```gdscript
+func update_path_to_target(delta):
+	var direction = Vector3()
+	nav.target_position = target.global_position
+	direction = nav.get_next_path_position() - global_position
+	direction = direction.normalized()
+	if not $AttackSensor.is_colliding():
+		velocity = velocity.lerp(direction*SPEED, 10 * delta)
+		damage_delay = 1.3
+	elif $AttackSensor.get_collider().name == "player":
+		velocity = Vector3()
+		damage_delay -= delta
+		if damage_delay <= 0:
+			target.damage()
+			damage_delay = 1.3 * 2
+	var look_at_pos = target.global_position
+	look_at_pos.y = global_position.y
+	look_at(look_at_pos, Vector3.UP)
+```
+
+Далее создадим сигналы у зоны на проверку входа игрока
+
+```gdscript
+func _on_area_chasing_body_entered(body: Node3D) -> void:
+	if "player" in body.name:
+		in_agro_area = true
+
+func _on_area_chasing_body_exited(body: Node3D) -> void:
+	if "player" in body.name:
+		in_agro_area = false
+
+```
+
+И поворот рэй каста для проверки находится ли игрок за стеной
+
+```gdscript
+func AgroCollide(delta):
+	if in_agro_area == true:
+		agro_ray_cast.look_at(target.global_position,Vector3.UP)
+		if agro_ray_cast.get_collider() == target:
+			bot_chasing = true
+	elif in_agro_area == false:
+		bot_chasing = false
+```
+
+
+```gdscript
+func move_towards_home(delta):
+	var direction = home_pos - global_position
+	if direction.length() > 0.1:  # Когда расстояние до home_pos больше порога, двигаемся
+		direction = direction.normalized()
+		velocity = direction * SPEED
+		look_at(home_pos, Vector3.UP)  # Поворачиваем в сторону home_pos
+	else:
+		velocity = Vector3.ZERO  # Останавливаемся, когда достигли home_pos
+		print("Bot reached home position!")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
