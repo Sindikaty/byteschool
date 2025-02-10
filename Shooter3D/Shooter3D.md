@@ -722,8 +722,25 @@ func move_towards_home(delta):
 		print("Bot reached home position!")
 ```
 
-
-
+Еще одна вариация
+```gdscript
+func move_towards_home(delta):
+	if global_position.distance_to(home_pos) > 0.5 and in_agro_area == false:  # Если бот ещё не достиг точки
+		print("ne aboba")
+		nav.target_position = home_pos  # Устанавливаем цель
+		var next_position = nav.get_next_path_position()  # Получаем следующую точку пути
+		
+		if next_position:  # Проверяем, есть ли следующая точка пути
+			var direction = (next_position - global_position).normalized()  # Направление к цели
+			velocity = velocity.lerp(direction * SPEED, 10 * delta)  # Плавное движение
+			var look_at_pos = next_position
+			look_at_pos.y = global_position.y  # Зафиксировать Y, чтобы не смотрел в пол
+			look_at(look_at_pos, Vector3.UP)
+		else:
+			velocity = Vector3.ZERO  # Останавливаемся, если пути нет
+	else:
+		velocity = Vector3.ZERO  # Останавливаемся, если дошли до home_pos
+```
 
 
 
