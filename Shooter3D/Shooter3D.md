@@ -742,10 +742,19 @@ func move_towards_home(delta):
 		velocity = Vector3.ZERO  # Останавливаемся, если дошли до home_pos
 ```
 
+```gdscript
+func _process(delta: float) -> void:
+	if ray.is_colliding():
+		move_weapon(Vector3(0, -0.15, -0.15), Vector3(-1.2, 0, 0), 0.12)
+	else:
+		move_weapon(Vector3(0, 0, 0), Vector3(0, 0, 0), 0.1)
 
-
-
-
+func move_weapon(target_position: Vector3, target_rotation: Vector3, duration: float):
+	var tween = create_tween()
+	tween.tween_property(weapon, "position", target_position, duration)
+	tween.tween_property(weapon, "rotation", target_rotation, duration)
+```
+Можно добавить звуки, остальное по желанию
 
 
 
