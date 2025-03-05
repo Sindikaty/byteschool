@@ -19,6 +19,7 @@
 
 У колес изменений будет намного больше
 Для начала у передних мы включем оба параметра, а задних только верхний (1 отвечает за движение, другой за поворот)
+
 ![image](https://github.com/user-attachments/assets/8e366464-3f52-43a0-b811-b76e58de3581)
 
 Далее идет настройка самих колес, основным будет радиус
@@ -139,9 +140,118 @@ else:
 steering = move_toward(steering, steer_target, STEER_SPEED * delta)
 ```
 
+Полный код
+
+```gdscript
+extends VehicleBody3D
 
 
+@export var STEER_SPEED = 1.5
+@export var STEER_LIMIT = 0.6
+var steer_target = 0
+@export var engine_force_value = 40
 
+
+func _physics_process(delta):
+	var speed = linear_velocity.length()*Engine.get_frames_per_second()*delta
+	traction(speed)
+	var fwd_mps = transform.basis.x.x
+	steer_target = Input.get_action_strength("ui_left") - Input.get_action_strength("ui_right")
+	steer_target *= STEER_LIMIT
+	if Input.is_action_pressed("ui_down"):
+		if speed < 20 and speed != 0:
+			engine_force = clamp(engine_force_value * 3 / speed, 0, 300)
+		else:
+			engine_force = engine_force_value
+	else:
+		engine_force = 0
+	if Input.is_action_pressed("ui_up"):
+		# Increase engine force at low speeds to make the initial acceleration faster.
+		if fwd_mps >= -1:
+			if speed < 30 and speed != 0:
+				engine_force = -clamp(engine_force_value * 10 / speed, 0, 300)
+			else:
+				engine_force = -engine_force_value
+		else:
+			brake = 1
+	else:
+		brake = 0.0
+		
+	if Input.is_action_pressed("ui_select"):
+		brake=3
+		$WheelLeftBack.wheel_friction_slip=0.8
+		$WheelRightBack.wheel_friction_slip=0.8
+	else:
+		$WheelLeftBack.wheel_friction_slip=3
+		$WheelRightBack.wheel_friction_slip=3
+	steering = move_toward(steering, steer_target, STEER_SPEED * delta)
+
+func traction(speed):
+	apply_central_force(Vector3.DOWN*speed)
+```
+
+# Камера
+
+Добавляем ноду к игроку. а уже к ней камеру, после чего рикрепляем скрипт к камере
+
+![image](https://github.com/user-attachments/assets/4162b211-8709-4c6c-9ad8-8c341024641f)
+
+Определим основные переменные
+
+```gdscript
+@export var target_distance = 5  # Дистанция до цели
+@export var target_height = 2    # Высота камеры относительно цели
+@export var speed := 20.0        # Скорость следования камеры
+var follow_this = null           # Объект, за которым следит камера
+var last_lookat                  # Последняя точка, куда смотрела камера
+```
+
+Определяем объект за которым камера будет сделаить
+
+```gdscript
+func _ready():
+    follow_this = get_parent()
+    last_lookat = follow_this.global_transform.origin
+```
+
+В _physics_process() создаем локальные переменные которые будут определять вектор смещения от камеры до объекта и целевая позиция камеры (будем ее изменять).
+```gdscript
+var delta_v = global_transform.origin - follow_this.global_transform.origin
+var target_pos = global_transform.origin
+```
+
+Добавляем игнорирование оси y, для того чтобы камера не колебалась вверх-вниз при движении.
+
+```gdscript
+delta_v.y = 0.0
+```
+
+Добавим ограничение дистанции камеры до цели
+
+```gdscript
+if (delta_v.length() > target_distance):
+    delta_v = delta_v.normalized() * target_distance
+    delta_v.y = target_height
+    target_pos = follow_this.global_transform.origin + delta_v
+else:
+    target_pos.y = follow_this.global_transform.origin.y + target_height
+```
+
+Плавное движение камеры
+
+```gdscript
+global_transform.origin = global_transform.origin.lerp(target_pos, delta * speed)
+```
+
+Плавный поворот камеры
+```gdscript
+last_lookat = last_lookat.lerp(follow_this.global_transform.origin, delta * speed)
+look_at(last_lookat, Vector3.UP)
+```
+
+И самое главное, что нужно сделать это влючить параметр Top Level
+
+![image](https://github.com/user-attachments/assets/7fccace3-a8fd-4d8b-a16d-9e0707c20e50)
 
 
 
