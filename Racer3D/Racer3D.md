@@ -327,6 +327,7 @@ func _physics_process(delta):
 
 ![image](https://github.com/user-attachments/assets/9f1b09af-bfec-4158-afd6-f33af7f67246)
 
+![image](https://github.com/user-attachments/assets/c6c7c704-d430-44ab-bc1a-f84bba990b09)
 
 
 
