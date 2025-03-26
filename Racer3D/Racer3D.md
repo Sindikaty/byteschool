@@ -325,6 +325,7 @@ func _physics_process(delta):
 
 Сделать страт финишь, и победу/проигрышь кто раньше приедет
 
+![image](https://github.com/user-attachments/assets/9f1b09af-bfec-4158-afd6-f33af7f67246)
 
 
 
