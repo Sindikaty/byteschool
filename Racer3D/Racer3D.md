@@ -291,3 +291,38 @@ func _physics_process(delta):
 	look_at(last_lookat, Vector3.UP)
 ```
 
+Боты
+
+1 вариант
+
+![image](https://github.com/user-attachments/assets/0a1db881-6266-4769-b928-f212cbdbe37e)
+
+И в Path3D просто добавляем значение progress_ratio
+
+![image](https://github.com/user-attachments/assets/a9a1aa2e-4d57-43ef-9cf0-fbc5ef711afb)
+
+2 вариант навигация 
+
+Это по сути как делали ботов в шутере, только точкой до которой будет идти бот будет маркер
+
+![image](https://github.com/user-attachments/assets/f8ea603f-190f-45cf-858c-a42b0631fe9b)
+
+Скрипт передвижения бота
+
+![image](https://github.com/user-attachments/assets/d09d245a-d850-44c4-83aa-e4d504fa4350)
+
+Поворот колес
+
+![image](https://github.com/user-attachments/assets/c048011d-5efc-4d37-9081-ebeb146f25e3)
+
+
+
+
+
+
+
+
+
+
+
+
