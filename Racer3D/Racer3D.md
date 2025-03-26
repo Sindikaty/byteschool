@@ -315,9 +315,15 @@ func _physics_process(delta):
 
 ![image](https://github.com/user-attachments/assets/c048011d-5efc-4d37-9081-ebeb146f25e3)
 
+Спидометр со стрелокой
 
+![image](https://github.com/user-attachments/assets/0a757044-89e8-4ba0-adce-86ad9ad64e67)
 
+Через прогрес бар
 
+![image](https://github.com/user-attachments/assets/bd150389-790a-4e7a-af92-f20fc633878d)
+
+Сделать страт финишь, и победу/проигрышь кто раньше приедет
 
 
 
