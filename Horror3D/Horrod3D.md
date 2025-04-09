@@ -250,3 +250,4 @@ zoom_value /= max_abs_difference
 
 ```
 
+![image](https://github.com/user-attachments/assets/1a579785-a888-4a0f-9ba1-fa1f33fd4ab1)
