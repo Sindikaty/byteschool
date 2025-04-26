@@ -296,6 +296,8 @@ zoom_value /= max_abs_difference
 
 ![image](https://github.com/user-attachments/assets/3f30f462-2289-4eda-a84c-c3371b413df5)
 
+Теперь у нас достаточно темно, можно добавить фонарик
+
 
 ```gdscript
 
