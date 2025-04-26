@@ -1,4 +1,4 @@
-# 3D-horror
+![image](https://github.com/user-attachments/assets/070db9a6-5e3e-4065-bc33-3a821237adee)# 3D-horror
 
 ## Урок 1
 
@@ -246,8 +246,57 @@ zoom_value /= max_abs_difference
 Сначала мы берем максимум (max_abs_difference) и добавляем усиленное приближение (current_abs_difference * (max_zoom_rate - 1)).
 Потом делим обратно на max_abs_difference, чтобы нормализовать результат в привычный диапазон (от 1.0 до max_zoom_rate).
 
+
+### Создание окружения
+
+Начнем с WorldEnvironment. Большинство подобный игр у нас происходят в полумраке или вовсе во тьме, поэтому сейчас мы настроим наш узел так, чтобы вокруг игрока было достаточно темно. Настройки WorldEnvironment
+
+
+Настройки неба
+
+![image](https://github.com/user-attachments/assets/e2f5d869-6bc1-46f1-a0bf-8ff52c8e6e79)
+
+Настройки яркости
+
+![image](https://github.com/user-attachments/assets/57bf37fe-1c81-479f-9ca2-ab70309f341f)
+
+Туман
+
+![image](https://github.com/user-attachments/assets/b5613d5c-cdd1-4438-95c1-f46d542c2a2c)
+
+Доп нстройки тумана
+
+![image](https://github.com/user-attachments/assets/7cd6a8e0-3734-4778-aa88-494506f7d53e)
+
+Доп настройки в целом
+
+![image](https://github.com/user-attachments/assets/03912a5f-44b2-484c-8367-37a471eff71a)
+
+Также в таких играх обычнет идет снег или дождь
+
+![image](https://github.com/user-attachments/assets/7c0c1113-895e-41b9-b0dd-d4343277b7c3)
+
+Раздел спавна партиклов
+
+![image](https://github.com/user-attachments/assets/982887d8-8b90-4d9c-ac99-a7f3ecaf2f61)
+
+![image](https://github.com/user-attachments/assets/467b7a7b-c922-4619-be93-4a7706932c6c)
+
+![image](https://github.com/user-attachments/assets/fd461b7a-2b49-4c8e-9771-a635c7e1a87b)
+
+Угловая быстрота
+
+![image](https://github.com/user-attachments/assets/ca14253f-d1a5-4071-9484-d984d01625f6)
+
+Размер на экране
+
+![image](https://github.com/user-attachments/assets/76524f9d-b18e-46ab-b2fe-ec209436b048)
+
+Турбулентность партиклов
+
+![image](https://github.com/user-attachments/assets/3f30f462-2289-4eda-a84c-c3371b413df5)
+
+
 ```gdscript
 
 ```
-
-![image](https://github.com/user-attachments/assets/1a579785-a888-4a0f-9ba1-fa1f33fd4ab1)
