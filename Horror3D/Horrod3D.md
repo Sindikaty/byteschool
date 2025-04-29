@@ -296,9 +296,109 @@ zoom_value /= max_abs_difference
 
 ![image](https://github.com/user-attachments/assets/3f30f462-2289-4eda-a84c-c3371b413df5)
 
-Теперь у нас достаточно темно, можно добавить фонарик
+### Добавление лестницы
 
+Для начала создадим базовый для всех будущих объектов скрипт
 
 ```gdscript
+extends StaticBody3D
+class_name InteractionBase
 
+func interact(_parameters=null):
+	pass
+```
+
+Пока что в нем будет только 1 функция
+
+Следующий скрипт это скрипт самой лестницы, которую перед этим нам нужн создать (Это Static body c мэшэм и коллизией)
+
+```gdscript
+extends InteractionBase
+
+class_name Ladder
+
+@onready var mesh: MeshInstance3D = $MeshInstance3D
+@onready var position_reference: Node3D = $PlayerPositionReference
+var height
+
+func _ready():
+	var aabb = mesh.get_aabb()
+	height = mesh.global_position.y + aabb.size.y
+	
+func interact(player=null):
+	#if not is_player_in_front(player,self):
+	player.get_parent().set_on_ladder(true,height)
+```
+
+У игрока нужно добавить RayCast который будет проверять навелся ли игрока на объект с который можно взаимодействовать. Теперь в скрипте котнроллера игрока мы проверяем нажатие кнопки и соприкосновение рэй каста и если он подходит под наши условия вызываем функцию у лестницы
+
+```gdscript
+@onready var ray_cast: RayCast3D = $head/RayCast3D
+
+func _input(event):
+	if event.is_action_pressed("Interact") and ray_cast.is_colliding():
+		var object = ray_cast.get_collider()
+		if object is InteractionBase:
+			object.interact(self)
+```
+
+Последним что нам нужно доабвить это все движение в скрипте игрока. Начнем с переменных
+
+```gdscript=
+enum PLAYER_MODES {
+	WALK,
+	LADDER
+}
+var current_mode := PLAYER_MODES.WALK
+var ladder_height = 0
+@export var ladder_height_subtract = 1
+```
+
+enum — это способ создать набор именованных констант для удобной работы с числами или режимами.
+Далее добавляем смену режима движения 
+
+```gdscript
+func _physics_process(delta):
+	match current_mode:
+		PLAYER_MODES.WALK:
+			walk_process(delta)
+		PLAYER_MODES.LADDER:
+			ladder_process(delta)
+```
+Сам режим переджвижения по лестницам
+
+```gdscript
+func ladder_process(_delta):
+	
+	if Input.is_action_just_pressed("Jump"):
+		velocity.y = JUMP_VELOCITY
+		set_player_mode(PLAYER_MODES.WALK)
+		return
+	
+	var input_dir = Input.get_vector("moveLeft", "moveRight", "moveDown", "moveUp")
+	var direction = (transform.basis * Vector3(0, input_dir.y,0)).normalized()
+	if direction:
+		velocity.y = direction.y * SPEED	
+	else:
+		velocity.y = move_toward(velocity.x, 0, SPEED)
+	if position.y >= ladder_height - ladder_height_subtract and velocity.y > 0:
+		velocity.y = 0
+		
+	move_and_slide()
+```
+
+И функции по сменам режимов
+
+```gdscript
+func set_player_mode(mode: PLAYER_MODES):
+	current_mode = mode
+
+
+func set_on_ladder(on_ladder, height):
+	if on_ladder:
+		set_player_mode(PLAYER_MODES.LADDER)
+		velocity = Vector3(0,0,0)
+	else:
+		set_player_mode(PLAYER_MODES.WALK)
+	ladder_height = height
 ```
