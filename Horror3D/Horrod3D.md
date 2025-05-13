@@ -421,6 +421,28 @@ func _physics_process(delta):
 	$SpotLight3D.visible = lightOn
 ```
 
+скрипт лестницы
+
+```gdscript
+func grow_visible():
+	mesh.material_override.next_pass.grow = true
+
+func grow_invisible():
+	mesh.material_override.next_pass.grow = false
+```
+
+скрипт контроллера камеры
+```gdscript
+	if ray_cast.is_colliding() and ray_cast.get_collider() is InteractionBase:
+		obj = ray_cast.get_collider()
+		grow_visible = !grow_visible
+		obj.grow_visible()
+	elif obj != null:
+		obj.grow_invisible()
+```
+
+
+
 
 
 
