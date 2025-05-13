@@ -355,7 +355,7 @@ var ladder_height = 0
 ```
 
 enum — это способ создать набор именованных констант для удобной работы с числами или режимами.
-Далее добавляем смену режима движения 
+Далее добавляем смену режима движения в скрипте игрока
 
 ```gdscript
 func _physics_process(delta):
@@ -365,7 +365,8 @@ func _physics_process(delta):
 		PLAYER_MODES.LADDER:
 			ladder_process(delta)
 ```
-Сам режим переджвижения по лестницам
+
+Сам режим переджвижения по лестницам (скрипт игрока)
 
 ```gdscript
 func ladder_process(_delta):
@@ -387,7 +388,7 @@ func ladder_process(_delta):
 	move_and_slide()
 ```
 
-И функции по сменам режимов
+И функции по сменам режимов (скрипт игрока)
 
 ```gdscript
 func set_player_mode(mode: PLAYER_MODES):
@@ -402,6 +403,26 @@ func set_on_ladder(on_ladder, height):
 		set_player_mode(PLAYER_MODES.WALK)
 	ladder_height = height
 ```
+
+
+Добавление фонарика
+
+Узел для света можно выбрать по желанию, я взял SpotLight (На скрине пример настроек, ученик может настроить как он хочет)
+
+![image](https://github.com/user-attachments/assets/e9f197d6-2963-4d25-89b1-22ecc2be8742)
+
+Скрипт включения выключения
+
+```gdscript
+var lightOn = false
+func _physics_process(delta):
+	if Input.is_action_just_pressed("lightOn"):
+		lightOn = !lightOn
+	$SpotLight3D.visible = lightOn
+```
+
+
+
 
 1. InteractionBase (базовый класс для всех интерактивных объектов)
 Что делает:
@@ -507,4 +528,5 @@ set_on_ladder(on_ladder, height):
 Универсальный способ взаимодействия с объектами.
 
 Можно легко добавлять новые интерактивные объекты без изменения кода игрока.
+
 
