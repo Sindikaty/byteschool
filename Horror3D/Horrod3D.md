@@ -443,6 +443,83 @@ func grow_invisible():
 
 
 
+Бот
+
+Узлы
+
+![image](https://github.com/user-attachments/assets/64da68ea-1831-45e2-9f26-a6afb4f74a8e)
+
+Скрипт
+
+```gdscript
+extends CharacterBody3D
+
+@export var base_speed: float = 3.0
+
+@export var nav_agent: NavigationAgent3D
+@export var target: Node3D
+
+var bot_chasing = false
+@onready var ray_cast_3d: RayCast3D = $RayCast3D
+
+
+
+var current_patrol_index = 0
+var is_aggro = false
+
+var mav_map : RID
+
+
+func _ready() -> void:
+	mav_map = self.get_world_3d().get_navigation_map()
+
+func _physics_process(delta):
+	var player_distance = global_position.distance_to(target.global_position)
+		
+	var speed = base_speed
+		
+	AgroCollide(delta)
+	if bot_chasing == true:
+		# Преследование
+		nav_agent.target_position = target.global_position
+	else:
+		# Патрулирование
+		if nav_agent.is_navigation_finished():
+			var next_pos = NavigationServer3D.map_get_random_point(mav_map,1,true)
+			nav_agent.target_position = next_pos
+		
+	# Движение по пути
+	var direction = nav_agent.get_next_path_position() - global_position
+	direction = direction.normalized()
+
+	velocity = velocity.lerp(direction * speed, 10 * delta)
+	look_at(nav_agent.get_next_path_position(), Vector3.UP)
+	move_and_slide()
+
+
+func _on_area_3d_body_entered(body: Node3D) -> void:
+	if "player" in body.name:
+		is_aggro = true
+
+func _on_area_3d_body_exited(body: Node3D) -> void:
+	if "player" in body.name:
+		is_aggro = false
+
+func AgroCollide(delta):
+	if is_aggro == true:
+		ray_cast_3d.look_at(target.global_position,Vector3.UP)
+		if ray_cast_3d.get_collider() == target:
+			bot_chasing = true
+	elif is_aggro == false:
+		bot_chasing = false
+```
+
+
+
+
+
+
+
 
 
 
@@ -551,4 +628,4 @@ set_on_ladder(on_ladder, height):
 
 Можно легко добавлять новые интерактивные объекты без изменения кода игрока.
 
-
+Б
